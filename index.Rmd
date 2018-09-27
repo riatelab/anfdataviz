@@ -4,7 +4,7 @@ date: "Sète, 16 nov. 2018"
 author: Nicolas Lambert, Ronan Ysebaert
 output:
   rmdformats::readthedown:
-    self_contained: false
+    self_contained: true
     thumbnails: false
     lightbox: true
     gallery: true
