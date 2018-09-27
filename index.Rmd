@@ -63,7 +63,7 @@ Pour exécuter les programmes proposés par la formation, [installez / mettez à
 
 Téléchargez les données sur la page github. Décompressez les données sur votre espace de travail. 
 
-Lien github à ajouter
+https://github.com/riatelab/anfdataviz/blob/master/data.zip
 
 
 # Exo 1 - Prise en main
