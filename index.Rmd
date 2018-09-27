@@ -13,6 +13,8 @@ output:
 
 <link rel="stylesheet" type="text/css" media="all" href="pics/mateshs.css" />
 
+<img src ="pics/construction.jpg"></img>
+
 Cette <b>formation de 3 heures 30</b> porte sur la visualisation de données géographiques sous R. Y sont abordées 
 les traitements SIG de base, la cartographie thématique (cartes en figurés proportionnels, cartes
 choroplèthes, cartes de typologie, etc) et des cartes reposant sur des techniques plus avancées comme les cartes 
