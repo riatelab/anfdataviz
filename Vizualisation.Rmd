@@ -1,0 +1,519 @@
+---
+title: "GÉO-VISUALISATION AVEC  R<br/><br/>Action nationale de formation<br/>MATE SHS"
+date: "Sète, 16 nov. 2018"
+author: Nicolas Lambert, Ronan Ysebaert
+output:
+  rmdformats::readthedown:
+    self_contained: false
+    thumbnails: false
+    lightbox: true
+    gallery: true
+    highlight: tango
+---
+
+<link rel="stylesheet" type="text/css" media="all" href="pics/mateshs.css" />
+
+Cette <b>formation de 3 heures 30</b> porte sur la visualisation de données géographiques sous R. Y sont abordées 
+les traitements SIG de base, la cartographie thématique (cartes en figurés proportionnels, cartes
+choroplèthes, cartes de typologie, etc) et des cartes reposant sur des techniques plus avancées comme les cartes 
+sur grille ou les cartes de discontinuité.
+
+Sont ici principalement utilisés les packages <b>sf</b> (manipulation de données spatiales) et <b>cartography</b> (cartographie
+thématique). Chaque exemple propose une chaine de traitement depuis le chargement des données, leur mise en forme,
+jusqu'à la mobilisation de méthodes adaptées permettant de répondre à des questions spatiales. 
+
+Les exemples proposés sont basés sur différentes échelles, du local (région Occitanie) en passant par l'Europe et
+le Monde. 
+
+
+# Pré-réquis
+
+## Les packages
+
+Sont décrits ici la version de R avec laquelle a été produit ce support de formation ainsi que les packages qui seront
+utilisés dans la formation et leur version respective. 
+
+```{r}
+library(devtools)
+session_info(pkgs = c("cartography","sf"), include_base = FALSE)
+```
+
+Pour exécuter les programmes proposés par la formation, [installez / mettez à jour R](https://www.r-project.org/) (version 3.5.1 minimum), [R Studio](https://www.rstudio.com/). Lancez ensuite R studio et installez les packages au moyen des commandes suivantes (prévoir bien 10 minutes) 
+
+```{r echo = TRUE}
+# install.packages("sf")
+# install.packages("devtools")
+# install.packages("cartography")
+# install.packages("countrycode")
+# install.packages("readxl")
+# install.packages("animation")
+# install.packages("rmapshaper")
+# install.packages("rnaturalearthdata")
+# install.packages("rnaturalearth")
+# install.packages("cartogram")
+# install.packages("reshape2")
+# install.packages("eurostat")
+```
+
+* Le package **sf** est un package qui permet d'importer, gérer et transformer des données géographiques (gestion des projections, opérations SIG). 
+* Le package **cartography** permet de créer et intégrer des cartes thématiques dans sa chaine de traitement en R. Il permet des représentations cartographiques tels que les cartes en symboles proportionnels, des cartes choroplèthes, des typologies, des cartes de flux ou des cartes de discontinuité. Il offre également des fonctions qui permettent d'améliorer la réalisation de la carte, comme des palettes de couleur, des éléments d'habillage (échelle, flèche du nord, titre, légende...), d'y rattacher des labels ou d'accéder à des APIs cartographiques. 
+* Le package... 
+
+## Téléchargez les données 
+
+Téléchargez les données sur la page github. Décompressez les données sur votre espace de travail. 
+
+Lien github à ajouter
+
+
+# Exo 1 - Prise en main
+
+## Commandes de base
+
+Définissez votre répertoire de travail.
+
+```{r, eval=F}
+setwd("Votre_repertoire_de_travail")
+```
+
+```{r, eval=T, echo=FALSE}
+# setwd("C:/MyCore/ANF2018 - R geoviz")
+setwd("/home/nlambert/ownCloud/ANF2018 - R geoviz")
+```
+
+Consulter le contenu. Et regarder ce qu'il y a dans le répertoire "data" 
+
+```{r, eval=T}
+list.files()
+list.files("data")
+```
+
+Import d'une couche SIG dans R avec le package sf. Pacakge basé sur GEOS 
+(Geometry Engine Open Source) et GDAL (Geospatial Data Abstraction Library). 
+
+```{r, eval=T}
+library("sf")
+communes <- st_read(dsn = "data/Hérault/communes.shp", stringsAsFactors = F)
+```
+
+Voir la table atributaire
+
+```{r, eval=T}
+communes
+head(communes)
+View(communes)
+```
+
+L'instruction plot permet d'afficher la couche.
+L'instruction st_geometry permet d'accéder à la variable définissant les géométries. 
+
+```{r, eval=T}
+plot(st_geometry(communes))
+```
+
+Afficher la couche avec des parametres graphiques
+```{r, eval=T}
+plot(st_geometry(communes), col="#aec8f2", border="darkblue", lwd=1)
+```
+
+
+## Introduction au SIG avec R / Manipuler les informations spatiales
+
+Nous cherchons à identifier les communes qui ont une partie de leur territoire 
+situé à moins de 20 km du centre de Sete.
+
+
+Nous commencçons par extraire la commune de Sète.  
+
+```{r, eval=T}
+macommune <- "SETE"
+monpoly <- communes[communes$NOM_COMM == macommune,]
+plot(st_geometry(communes), col="#aec8f2", border="darkblue", lwd=1)
+plot(st_geometry(monpoly), col="red", border="purple", lwd=1, add=T)
+```
+
+Extraitre le centroide de la commune de Sete. 
+
+```{r, eval=T}
+moncentre <- st_centroid(x = monpoly)
+plot(st_geometry(communes), col="#aec8f2", border="darkblue", lwd=1)
+plot(st_geometry(monpoly), col="red", border="purple", lwd=1, add=T)
+plot(st_geometry(moncentre), pch=20, col="black", cex=2, add=T)
+```
+
+Calculer une zone tampon
+
+
+```{r, eval=T}
+mydist <- 20000
+
+buff <- st_buffer(x = st_geometry(moncentre), dist=mydist)
+plot(st_geometry(communes), col="#aec8f2", border="darkblue", lwd=1)
+plot(st_geometry(monpoly), col="red", border="purple", lwd=1, add=T)
+plot(st_geometry(moncentre), pch=20, col="black", cex=2, add=T)
+plot(buff, col=NA, border="black", lty=2,add=T)
+```
+
+Récupérer la liste des communes
+
+```{r, eval=T}
+communes$buff <- st_intersects(st_geometry(communes), st_geometry(buff), sparse = FALSE)
+head(communes)
+```
+
+Récupérer le nombre de communes à moins de 20 km
+
+```{r, eval=T}
+nb <- dim(communes[communes$buff == T,])
+nb[1]
+```
+
+Extraction et affichage des communes
+
+```{r, eval=T}
+communes20km <- communes[communes$buff == TRUE,]
+plot(st_geometry(communes), col="#aec8f2", border="darkblue", lwd=1)
+plot(st_geometry(monpoly), col="red", border="purple", lwd=1, add=T)
+plot(st_geometry(moncentre), pch=20, col="black", cex=2, add=T)
+plot(buff, col=NA, border="black", lty=2,add=T)
+plot(st_geometry(communes20km), col=NA, lwd=2, border="red", add=T)
+```
+
+
+Ajout d'un titre
+
+```{r, eval=T}
+plot(st_geometry(communes), col="#aec8f2", border="darkblue", lwd=1)
+plot(st_geometry(monpoly), col="red", border="purple", lwd=1, add=T)
+plot(st_geometry(moncentre), pch=20, col="black", cex=2, add=T)
+plot(buff, col=NA, border="black", lty=2,add=T)
+plot(st_geometry(communes20km), col=NA, lwd=2, border="red", add=T)
+montitre <- paste0("Il y a ", nb[1], " communes situées à moins de ", mydist/1000, "km de ",tolower(macommune))
+title(montitre)
+```
+
+Export (si besoin)
+
+```{r, eval=F, echo=T}
+st_write(obj = communes20km, dsn = "outputs/resultat.shp")
+```
+
+
+
+## A vous de jouer ! 
+Reproduisez cette procédure avec la commune et la distance de votre choix.
+
+Pour accéder au listing des communes d'Hérault
+```{r, eval=F}
+communes$NOM_COMM
+```
+
+
+
+
+
+# Exo 2 - Cartes en figurés proportionnels
+
+## Objectifs :
+* Thématique : Réaliser une carte des catégories Socio professionnelles.
+* Espace d'étude : Occitanie, communes
+* Visualisation associée : carte en figurés proportionnels (+ cartogrammes de Dorling)
+* packages utilisés : sf, cartography, cartogram, readxl 
+
+Créer un nouveau fichier "Exo2.R".
+
+## Chargement et préparation des données
+Pour bien commencer, il est fondamental de jeter un oeil au fichier d'entrée
+pour comprendre son organisation et savoir comment l'importer sous R. 
+
+Ouvrez le fichier data/France/INSEE/pop-act2554-csp-cd-6814.xls
+Nous nous intéressons ici à l'onglet "COM_2014".
+
+```{r}
+library("sf")
+library("readxl")
+```
+
+## Visualisation : carte en figuré proportionnel 
+```{r}
+library("cartography")
+```
+
+
+
+variable visuelle taille adaptée aux caractères quantitatifs absolus.
+
+
+## Visualisation : carte combinant figuré proportionnel et typologie
+variable visuelle taille + variable visuelle couleur
+
+
+
+## Visualisation : cartogramme de Dorling
+```{r}
+library("cartogram")
+```
+
+
+
+
+
+# Exo 3 -  
+
+## Chargement des packages nécessaires 
+
+<img src = "pics/formes_distribution.png"></img>
+
+
+xxx
+
+<img src = "pics/carroyages.png"></img>
+
+xxx
+
+# Exo 4 - Cartes de discontinuité
+
+## Objectifs :
+* Thématique : Les inégalités d'IDH et/ou d'espérance de vie
+* Espace d'étude : Le Monde, pays.
+* Visualisation associée : carte chorplèthe, discontinuités
+* packages utilisés : sf, cartography, rnaturalearth, readxl, countrycode
+
+<img src="pics/discontinuités.png"></img>
+
+## Import du fond de carte
+
+méthode 1 : à la main (après téléchargement sur le site Natural Earth)
+
+```{r, eval=F, echo=T}
+library("sf")
+countries <- st_read(dsn = "data/world/naturalearth/ne_110m_admin_0_countries.shp", stringsAsFactors = F)  
+```
+
+Méthode 2 : directement via R
+
+```{r, eval=F, echo=T}
+library("sf")
+url <- "https://www.naturalearthdata.com/http//www.naturalearthdata.com/download/110m/cultural/ne_110m_admin_0_countries.zip"
+download.file(url = url, destfile = "data/download/countries.zip")
+unzip("data/download/countries.zip", exdir = "data/download", unzip = "internal")
+file.remove("data/download/countries.zip")
+countries <- st_read(dsn = "data/download/ne_110m_admin_0_countries.shp", stringsAsFactors = F)
+```
+
+Méthode 3 : directement via R
+
+```{r, eval=T, echo=T}
+library("rnaturalearth")
+countries <- ne_countries(scale = 50, type = "countries", continent = NULL,
+                          country = NULL, geounit = NULL, sovereignty = NULL,
+                          returnclass = "sf")
+```
+
+Le fond de carte peut être visualisé avec l'instruction plot
+
+```{r, eval=T, echo=T}
+plot(st_geometry(countries))
+```
+
+On ne conserve que les champs utiles. On les renomme. 
+
+```{r, eval=T, echo=T}
+countries <- countries[,c("adm0_a3", "admin", "geometry")]
+colnames(countries) <- c("id","name","geometry")
+```
+
+On Supprime l'Antarctique
+
+```{r, eval=T, echo=T}
+countries <- countries[countries$id != "ATA",]
+```
+
+On supprime les lignes vides
+
+```{r, eval=T, echo=T}
+countries <- countries[!is.na(countries$id),]
+```
+
+```{r, eval=T, echo=T}
+plot(st_geometry(countries))
+```
+
+## Import des données atributaires
+
+Import des données sur l'éspérance de vie (source : Banque mondiale)
+
+```{r, eval=T, echo=T}
+library("readxl")
+file <-"data/world/worldbank/API_SP.DYN.LE00.IN_DS2_en_excel_v2_10081535.xls"
+sheet <- "Data"
+lifexp <- data.frame(read_excel(file, skip = 3, sheet = sheet))
+lifexp <- lifexp[,c("Country.Code","Country.Name","X2016")]
+colnames(lifexp) <- c("id","name","lifexp2016")
+lifexp$lifexp2016 <- as.numeric(as.character(lifexp$lifexp2016))
+```
+
+Import des données sur l'Indice de deveoppement humain (source : Human Development Report)
+
+```{r, eval=T, echo=T}
+file <-"data/world/hdr/Human Development Index (HDI).csv"
+hdi <- read.csv2(file = file, sep = ",",skip = 1)
+hdi <- hdi[,c("Country","X2016")]
+```
+
+```{r, eval=T, echo=T}
+head(hdi,4)
+```
+
+Le tableau de données sur l'IDH ne possède pas de codes géographiques, mais uniquement le nom des pays. Cela rend la jointure avec le fond de carte compliquée. Une solution : le package <b>countrycode</b>
+
+```{r, eval=T, echo=T}
+library("countrycode")
+hdi$id <- countrycode(hdi$Country, 'country.name', 'iso3c')
+```
+
+Un peu de mise en forme. Les codes sont bien là. C'est presque magique... Mais attention, dans la pratique, une vérification manuelle s'impose. 
+
+```{r, eval=T, echo=T}
+hdi <- hdi[,c("id","Country","X2016")]
+colnames(hdi) <- c("id","name","hdi2016")
+hdi$hdi2016 <- as.numeric(as.character(hdi$hdi2016))  
+head(hdi,4)
+```
+
+## Cartographie
+
+Chargement du package
+
+```{r, eval=T, echo=T}
+library("cartography")
+```
+
+Changer la projection du fond de carte (voir le site http://spatialreference.org)
+
+```{r, eval=T, echo=T}
+countries <- st_transform(countries, "+proj=cea +lon_0=0 +lat_ts=45 +x_0=0 +y_0=0 +ellps=WGS84 +units=m +no_defs ")
+plot(st_geometry(countries))
+```
+
+Jointures des deux fichiers de données
+
+```{r, eval=T, echo=T}
+countries <- merge(countries, lifexp, by="id", all.x=TRUE)
+countries <- merge(countries, hdi, by="id", all.x=TRUE)
+countries <- countries[,c("id","name.x","lifexp2016","hdi2016","geometry")]
+colnames(countries)[2] <- "name"
+```
+
+<b>On travaille sur l'indice de développement humain</b>
+
+analyse de la distribution
+
+```{r, eval=T, echo=T}
+var <- countries$hdi2016
+hist(countries$hdi2016, probability = TRUE, nclass = 30)
+```
+
+On choisit une discretisation par la méthode des <b>quantiles</b> sans classe centrale
+
+```{r, eval=T, echo=T}
+breaks <- getBreaks(v = var, nclass = 6, method = "quantile")
+cols <- carto.pal(pal1="blue.pal", n1 = 3, pal2 = "orange.pal", n2 = 3, middle = FALSE, transparency = FALSE)
+```
+
+Réalisation de la carte
+
+```{r, eval=T, echo=T}
+layoutLayer(extent = countries,
+            bg="#EEEEEE",
+            title = "Indice de développement humain en 2016",
+            scale = NULL,
+            sources = "Human development Report, 2018",
+            author = "les serial mappers"
+            )
+choroLayer(x = countries, 
+           var = "hdi2016",
+           breaks = breaks,
+           col = cols,
+           border = "white",
+           lwd=0.2,
+           add = TRUE,
+           legend.pos = "topleft",
+           legend.title.txt = "IDH, 2016",
+           legend.values.rnd = 2)
+```
+
+## Et si on ajoutait des lignes de discontinuités à cette carte?
+
+L'instruction getBorders (du package cartography) permet d'extraire les frontières entre les unités spatiales.
+
+```{r, eval=T, echo=T}
+borders <- getBorders(countries)
+plot(st_geometry(borders), col="black", lwd=1)
+```
+
+Quid des discontinuités paritimes ? Par exemple entre l'Italie et la Tunisie ? Ou entre le Maroc et l'Espagne ? L'instruction getOuterBorders (package cartography) permet de les générer. Cette instruction peut prendre un peu de temps.
+
+```{r, eval=T, echo=T}
+outer <- getOuterBorders(x = countries, res = 100000, width=500000)
+plot(st_geometry(borders), col="#CCCCCC", lwd=1)
+plot(st_geometry(outer), col="red", lwd=1, add=T)
+```
+
+On assemble les deux couches avec rbind
+
+```{r, eval=T, echo=T}
+b <- rbind(borders,outer)
+```
+
+<b>Tout est prêt pour réaliser une carte de discontinuités</b>
+
+```{r, eval=T, echo=T}
+# 1 - la carte choroplèthe
+layoutLayer(extent = countries,
+            bg="#EEEEEE",
+            title = "Indice de développement humain en 2016",
+            scale = NULL,
+            sources = "Human development Report, 2018",
+            author = "les serial mappers"
+            )
+choroLayer(x = countries, 
+           var = "hdi2016",
+           breaks = breaks,
+           col = cols,
+           border = "white",
+           lwd=0.2,
+           add = TRUE,
+           legend.pos = "topleft",
+           legend.title.txt = "IDH, 2016",
+           legend.values.rnd = 2)
+
+# 2 - les discontinuités
+
+discLayer(x = b, df = countries,
+          var = "hdi2016", col="black", nclass=4,
+          method="quantile", threshold = 0.25, sizemin = 0.2,
+          sizemax = 8, type = "abs", 
+          legend.title.txt = "Discontinuities\nabsolues",
+          legend.pos = "bottomleft", add=TRUE)
+```
+
+
+# BONUS
+
+## Utiliser des données OSM
+
+# Ressources
+
+* BEGUIN Michèle, PUMAIN Denise, La représentation des données géographiques, Statistique et cartographie, coll. Cursus, Armand Colin, nouvelle édition 2000, 192p. 
+* BERTIN Jacques, Sémiologie graphique, Monton-Gauthier-Villars, 1967, 1973, 432 p. Disponible à ce jour dans la collection Réimpression de l’EHESS, 1998. 
+* BERTIN Jacques, La graphique et le traitement graphique de l’information, Flammarion, 1977, 280 p.
+* BRUNET Roger, La carte mode d’emploi, Fayard-Reclus, 1987, 270p.
+* ElementR (Groupe), R et espace, traitement de l’information géographique, 2014, Framabook.
+* LAMBERT Nicolas : Carnet de recherche neocarto : https://neocarto.hypotheses.org
+* LAMBERT Nicolas, ZANIN Christine : « Manuel de cartographie. Principes, méthodes, applications », cursus, Armand Colin, 18 mai 2016, 224p. 
+* Giraud Timothée : Carnet de recherche rgeomatic : https://rgeomatic.hypotheses.org/
+* ZANIN Christine, TREMELO Marie-Laure, Savoir faire une carte, Aide à la conception et à la réalisation d’une carte thématique univariée, coll. Sup géographie, Belin, 2003, 200p.
+
+<img src = "pics/baniere_nervure_EB_2.jpg"></img>
+

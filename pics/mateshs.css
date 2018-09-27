@@ -1,0 +1,33 @@
+#table-of-contents h2 {
+        background-color: #496b0c;
+}
+
+
+#table-of-contents {
+    background: black;
+}
+
+h1, h2, h3, h4, h5, h6, legend {
+    color: #496b0c;
+}
+
+h1 {
+    background-color: #496b0c;
+    color : white;
+    text-align:center;
+    padding: 10px;
+    border-radius: 10px;	
+}
+
+#table-of-contents h2 {
+        background-color: #496b0c;
+}
+
+#table-of-contents li a:hover{
+background-color: #496b0c;
+color:white;
+}
+
+#content pre {
+background-color:#dbe2cf;
+}

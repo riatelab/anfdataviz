@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="author" content="Nicolas Lambert, Ronan Ysebaert" />
+
+
+<title>GÉO-VISUALISATION AVEC R  Action nationale de formation MATE SHS</title>
+
+<script src="Vizualisation_files/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="Vizualisation_files/bootstrap-3.3.6/css/bootstrap.min.css" rel="stylesheet" />
+<script src="Vizualisation_files/bootstrap-3.3.6/js/bootstrap.min.js"></script>
+<script src="Vizualisation_files/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<script src="Vizualisation_files/navigation-1.1/tabsets.js"></script>
+<script src="Vizualisation_files/navigation-1.1/codefolding.js"></script>
+<link href="Vizualisation_files/magnific-popup-1.1.0/magnific-popup.css" rel="stylesheet" />
+<script src="Vizualisation_files/magnific-popup-1.1.0/jquery.magnific-popup.min.js"></script>
+<link href="Vizualisation_files/readthedown-0.1/readthedown.css" rel="stylesheet" />
+<script src="Vizualisation_files/readthedown-0.1/readthedown.js"></script>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; background-color: #f8f8f8; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+pre, code { background-color: #f8f8f8; }
+code > span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code > span.dt { color: #204a87; } /* DataType */
+code > span.dv { color: #0000cf; } /* DecVal */
+code > span.bn { color: #0000cf; } /* BaseN */
+code > span.fl { color: #0000cf; } /* Float */
+code > span.ch { color: #4e9a06; } /* Char */
+code > span.st { color: #4e9a06; } /* String */
+code > span.co { color: #8f5902; font-style: italic; } /* Comment */
+code > span.ot { color: #8f5902; } /* Other */
+code > span.al { color: #ef2929; } /* Alert */
+code > span.fu { color: #000000; } /* Function */
+code > span.er { color: #a40000; font-weight: bold; } /* Error */
+code > span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #000000; } /* Constant */
+code > span.sc { color: #000000; } /* SpecialChar */
+code > span.vs { color: #4e9a06; } /* VerbatimString */
+code > span.ss { color: #4e9a06; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #000000; } /* Variable */
+code > span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code > span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code > span.ex { } /* Extension */
+code > span.at { color: #c4a000; } /* Attribute */
+code > span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code > span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+
+</head>
+
+<body>
+
+
+<div id="content" data-toggle="wy-nav-shift">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+<nav id="nav-top" role="navigation" aria-label="top navigation">
+    <a role="button" href="#" data-toggle="wy-nav-top"><span class="glyphicon glyphicon-menu-hamburger"></span></a>
+</nav>
+
+
+<div id="header">
+<h1 class="title">GÉO-VISUALISATION AVEC R<br/><br/>Action nationale de formation<br/>MATE SHS</h1>
+</div>
+
+
+<div id="table-of-contents">
+    <h2><a href="#content">GÉO-VISUALISATION AVEC R<br/><br/>Action nationale de formation<br/>MATE SHS</a></h2>
+    <div id="text-table-of-contents">
+      <ul>
+      <li><a href="#pre-requis">Pré-réquis</a><ul>
+      <li><a href="#les-packages">Les packages</a></li>
+      <li><a href="#telechargez-les-donnees">Téléchargez les données</a></li>
+      </ul></li>
+      <li><a href="#exo-1---prise-en-main">Exo 1 - Prise en main</a><ul>
+      <li><a href="#commandes-de-base">Commandes de base</a></li>
+      <li><a href="#introduction-au-sig-avec-r-manipuler-les-informations-spatiales">Introduction au SIG avec R / Manipuler les informations spatiales</a></li>
+      <li><a href="#a-vous-de-jouer">A vous de jouer !</a></li>
+      </ul></li>
+      <li><a href="#exo-2---cartes-en-figures-proportionnels">Exo 2 - Cartes en figurés proportionnels</a><ul>
+      <li><a href="#objectifs">Objectifs :</a></li>
+      <li><a href="#chargement-et-preparation-des-donnees">Chargement et préparation des données</a></li>
+      <li><a href="#visualisation-carte-en-figure-proportionnel">Visualisation : carte en figuré proportionnel</a></li>
+      <li><a href="#visualisation-carte-combinant-figure-proportionnel-et-typologie">Visualisation : carte combinant figuré proportionnel et typologie</a></li>
+      <li><a href="#visualisation-cartogramme-de-dorling">Visualisation : cartogramme de Dorling</a></li>
+      </ul></li>
+      <li><a href="#exo-3--">Exo 3 -</a><ul>
+      <li><a href="#chargement-des-packages-necessaires">Chargement des packages nécessaires</a></li>
+      </ul></li>
+      <li><a href="#exo-4---cartes-de-discontinuite">Exo 4 - Cartes de discontinuité</a><ul>
+      <li><a href="#objectifs-1">Objectifs :</a></li>
+      <li><a href="#import-du-fond-de-carte">Import du fond de carte</a></li>
+      <li><a href="#import-des-donnees-atributaires">Import des données atributaires</a></li>
+      <li><a href="#cartographie">Cartographie</a></li>
+      <li><a href="#et-si-on-ajoutait-des-lignes-de-discontinuites-a-cette-carte">Et si on ajoutait des lignes de discontinuités à cette carte?</a></li>
+      </ul></li>
+      <li><a href="#bonus">BONUS</a><ul>
+      <li><a href="#utiliser-des-donnees-osm">Utiliser des données OSM</a></li>
+      </ul></li>
+      <li><a href="#ressources">Ressources</a></li>
+      </ul>
+    </div>
+</div>
+
+<div id="main">
+<p><link rel="stylesheet" type="text/css" media="all" href="pics/mateshs.css" /></p>
+<p>Cette <b>formation de 3 heures 30</b> porte sur la visualisation de données géographiques sous R. Y sont abordées les traitements SIG de base, la cartographie thématique (cartes en figurés proportionnels, cartes choroplèthes, cartes de typologie, etc) et des cartes reposant sur des techniques plus avancées comme les cartes sur grille ou les cartes de discontinuité.</p>
+<p>Sont ici principalement utilisés les packages <b>sf</b> (manipulation de données spatiales) et <b>cartography</b> (cartographie thématique). Chaque exemple propose une chaine de traitement depuis le chargement des données, leur mise en forme, jusqu’à la mobilisation de méthodes adaptées permettant de répondre à des questions spatiales.</p>
+<p>Les exemples proposés sont basés sur différentes échelles, du local (région Occitanie) en passant par l’Europe et le Monde.</p>
+<div id="pre-requis" class="section level1">
+<h1>Pré-réquis</h1>
+<div id="les-packages" class="section level2">
+<h2>Les packages</h2>
+<p>Sont décrits ici la version de R avec laquelle a été produit ce support de formation ainsi que les packages qui seront utilisés dans la formation et leur version respective.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(devtools)
+<span class="kw">session_info</span>(<span class="dt">pkgs =</span> <span class="kw">c</span>(<span class="st">&quot;cartography&quot;</span>,<span class="st">&quot;sf&quot;</span>), <span class="dt">include_base =</span> <span class="ot">FALSE</span>)</code></pre></div>
+<pre><code>## Session info -------------------------------------------------------------</code></pre>
+<pre><code>##  setting  value                       
+##  version  R version 3.4.4 (2018-03-15)
+##  system   x86_64, linux-gnu           
+##  ui       X11                         
+##  language (EN)                        
+##  collate  en_US.UTF-8                 
+##  tz       Europe/Paris                
+##  date     2018-09-27</code></pre>
+<pre><code>## Packages -----------------------------------------------------------------</code></pre>
+<pre><code>##  package     * version date       source        
+##  abind         1.4-5   2016-07-21 CRAN (R 3.4.4)
+##  cartography   2.1.2   2018-09-18 CRAN (R 3.4.4)
+##  class         7.3-14  2015-08-30 CRAN (R 3.4.2)
+##  classInt      0.2-3   2018-04-16 CRAN (R 3.4.4)
+##  curl          3.2     2018-03-28 CRAN (R 3.4.4)
+##  DBI           1.0.0   2018-05-02 CRAN (R 3.4.4)
+##  digest        0.6.17  2018-09-12 CRAN (R 3.4.4)
+##  e1071         1.7-0   2018-07-28 CRAN (R 3.4.4)
+##  graphics    * 3.4.4   2018-04-21 local         
+##  grDevices   * 3.4.4   2018-04-21 local         
+##  grid          3.4.4   2018-04-21 local         
+##  httr          1.3.1   2017-08-20 CRAN (R 3.4.4)
+##  jpeg          0.1-8   2014-01-23 CRAN (R 3.4.4)
+##  jsonlite      1.5     2017-06-01 CRAN (R 3.4.4)
+##  lattice       0.20-35 2017-03-25 CRAN (R 3.4.2)
+##  magrittr      1.5     2014-11-22 CRAN (R 3.4.4)
+##  MASS          7.3-49  2018-02-23 CRAN (R 3.4.3)
+##  methods     * 3.4.4   2018-04-21 local         
+##  mime          0.5     2016-07-07 CRAN (R 3.4.4)
+##  openssl       1.0.2   2018-07-30 CRAN (R 3.4.4)
+##  plyr          1.8.4   2016-06-08 CRAN (R 3.4.4)
+##  png           0.1-7   2013-12-03 CRAN (R 3.4.4)
+##  prettymapr    0.2.2   2017-09-20 CRAN (R 3.4.4)
+##  R6            2.2.2   2017-06-17 CRAN (R 3.4.4)
+##  raster        2.6-7   2017-11-13 CRAN (R 3.4.4)
+##  Rcpp          0.12.18 2018-07-23 CRAN (R 3.4.4)
+##  rgdal         1.3-4   2018-08-03 CRAN (R 3.4.4)
+##  rgeos         0.3-28  2018-06-08 CRAN (R 3.4.4)
+##  rjson         0.2.20  2018-06-08 CRAN (R 3.4.4)
+##  rosm          0.2.2   2017-04-07 CRAN (R 3.4.4)
+##  sf            0.6-3   2018-05-17 CRAN (R 3.4.4)
+##  sp            1.3-1   2018-06-05 CRAN (R 3.4.4)
+##  spData        0.2.9.4 2018-09-15 CRAN (R 3.4.4)
+##  stats       * 3.4.4   2018-04-21 local         
+##  tools         3.4.4   2018-04-21 local         
+##  units         0.6-1   2018-09-21 CRAN (R 3.4.4)
+##  utils       * 3.4.4   2018-04-21 local</code></pre>
+<p>Pour exécuter les programmes proposés par la formation, <a href="https://www.r-project.org/">installez / mettez à jour R</a> (version 3.5.1 minimum), <a href="https://www.rstudio.com/">R Studio</a>. Lancez ensuite R studio et installez les packages au moyen des commandes suivantes (prévoir bien 10 minutes)</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># install.packages(&quot;sf&quot;)</span>
+<span class="co"># install.packages(&quot;devtools&quot;)</span>
+<span class="co"># install.packages(&quot;cartography&quot;)</span>
+<span class="co"># install.packages(&quot;countrycode&quot;)</span>
+<span class="co"># install.packages(&quot;readxl&quot;)</span>
+<span class="co"># install.packages(&quot;animation&quot;)</span>
+<span class="co"># install.packages(&quot;rmapshaper&quot;)</span>
+<span class="co"># install.packages(&quot;rnaturalearthdata&quot;)</span>
+<span class="co"># install.packages(&quot;rnaturalearth&quot;)</span>
+<span class="co"># install.packages(&quot;cartogram&quot;)</span>
+<span class="co"># install.packages(&quot;reshape2&quot;)</span>
+<span class="co"># install.packages(&quot;eurostat&quot;)</span></code></pre></div>
+<ul>
+<li>Le package <strong>sf</strong> est un package qui permet d’importer, gérer et transformer des données géographiques (gestion des projections, opérations SIG).</li>
+<li>Le package <strong>cartography</strong> permet de créer et intégrer des cartes thématiques dans sa chaine de traitement en R. Il permet des représentations cartographiques tels que les cartes en symboles proportionnels, des cartes choroplèthes, des typologies, des cartes de flux ou des cartes de discontinuité. Il offre également des fonctions qui permettent d’améliorer la réalisation de la carte, comme des palettes de couleur, des éléments d’habillage (échelle, flèche du nord, titre, légende…), d’y rattacher des labels ou d’accéder à des APIs cartographiques.</li>
+<li>Le package…</li>
+</ul>
+</div>
+<div id="telechargez-les-donnees" class="section level2">
+<h2>Téléchargez les données</h2>
+<p>Téléchargez les données sur la page github. Décompressez les données sur votre espace de travail.</p>
+<p>Lien github à ajouter</p>
+</div>
+</div>
+<div id="exo-1---prise-en-main" class="section level1">
+<h1>Exo 1 - Prise en main</h1>
+<div id="commandes-de-base" class="section level2">
+<h2>Commandes de base</h2>
+<p>Définissez votre répertoire de travail.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">setwd</span>(<span class="st">&quot;Votre_repertoire_de_travail&quot;</span>)</code></pre></div>
+<p>Consulter le contenu. Et regarder ce qu’il y a dans le répertoire “data”</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">list.files</span>()</code></pre></div>
+<pre><code>## [1] &quot;data&quot;                &quot;data.zip&quot;            &quot;outputs&quot;            
+## [4] &quot;pics&quot;                &quot;prg&quot;                 &quot;Vizualisation_files&quot;
+## [7] &quot;Vizualisation.html&quot;  &quot;Vizualisation.Rmd&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">list.files</span>(<span class="st">&quot;data&quot;</span>)</code></pre></div>
+<pre><code>## [1] &quot;download&quot;  &quot;Europe&quot;    &quot;France&quot;    &quot;Hérault&quot;   &quot;Occitanie&quot; &quot;world&quot;</code></pre>
+<p>Import d’une couche SIG dans R avec le package sf. Pacakge basé sur GEOS (Geometry Engine Open Source) et GDAL (Geospatial Data Abstraction Library).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">&quot;sf&quot;</span>)</code></pre></div>
+<pre><code>## Linking to GEOS 3.6.2, GDAL 2.2.3, proj.4 4.9.3</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">communes &lt;-<span class="st"> </span><span class="kw">st_read</span>(<span class="dt">dsn =</span> <span class="st">&quot;data/Hérault/communes.shp&quot;</span>, <span class="dt">stringsAsFactors =</span> F)</code></pre></div>
+<pre><code>## Reading layer `communes&#39; from data source `/home/nlambert/ownCloud/ANF2018 - R geoviz/data/Hérault/communes.shp&#39; using driver `ESRI Shapefile&#39;
+## Simple feature collection with 343 features and 5 fields
+## geometry type:  POLYGON
+## dimension:      XY
+## bbox:           xmin: 662675 ymin: 6234874 xmax: 796333 ymax: 6319348
+## epsg (SRID):    NA
+## proj4string:    +proj=lcc +lat_1=49 +lat_2=44 +lat_0=46.5 +lon_0=3 +x_0=700000 +y_0=6600000 +ellps=GRS80 +units=m +no_defs</code></pre>
+<p>Voir la table atributaire</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">communes</code></pre></div>
+<pre><code>## Simple feature collection with 343 features and 5 fields
+## geometry type:  POLYGON
+## dimension:      XY
+## bbox:           xmin: 662675 ymin: 6234874 xmax: 796333 ymax: 6319348
+## epsg (SRID):    NA
+## proj4string:    +proj=lcc +lat_1=49 +lat_2=44 +lat_0=46.5 +lon_0=3 +x_0=700000 +y_0=6600000 +ellps=GRS80 +units=m +no_defs
+## First 10 features:
+##    INSEE_COM                       NOM_COMM           STATUT SUPERFICIE
+## 1      34029                        BELARGA   Commune simple        415
+## 2      34290 SAINT-VINCENT-DE-BARBEYRARGUES   Commune simple        222
+## 3      34032                        BEZIERS   Sous-prfecture       9567
+## 4      34082                    COMBAILLAUX   Commune simple        902
+## 5      34108                     FRONTIGNAN Chef-lieu canton       3984
+## 6      34166                      MONTBLANC   Commune simple       2716
+## 7      34066                    CAZEVIEILLE   Commune simple       1619
+## 8      34296                      SAUSSINES   Commune simple        630
+## 9      34269        SAINT-JEAN-DE-MINERVOIS   Commune simple       3277
+## 10     34012                     ARGELLIERS   Commune simple       5065
+##    NOM_DEPT                       geometry
+## 1   HERAULT POLYGON ((742075 6272005, 7...
+## 2   HERAULT POLYGON ((770896 6289405, 7...
+## 3   HERAULT POLYGON ((718759 6244261, 7...
+## 4   HERAULT POLYGON ((761606 6284489, 7...
+## 5   HERAULT POLYGON ((758738 6257679, 7...
+## 6   HERAULT POLYGON ((728067 6248191, 7...
+## 7   HERAULT POLYGON ((762395 6294296, 7...
+## 8   HERAULT POLYGON ((784582 6294234, 7...
+## 9   HERAULT POLYGON ((686897 6252592, 6...
+## 10  HERAULT POLYGON ((756922 6287661, 7...</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(communes)</code></pre></div>
+<pre><code>## Simple feature collection with 6 features and 5 fields
+## geometry type:  POLYGON
+## dimension:      XY
+## bbox:           xmin: 710431 ymin: 6244261 xmax: 771300 ymax: 6292043
+## epsg (SRID):    NA
+## proj4string:    +proj=lcc +lat_1=49 +lat_2=44 +lat_0=46.5 +lon_0=3 +x_0=700000 +y_0=6600000 +ellps=GRS80 +units=m +no_defs
+##   INSEE_COM                       NOM_COMM           STATUT SUPERFICIE
+## 1     34029                        BELARGA   Commune simple        415
+## 2     34290 SAINT-VINCENT-DE-BARBEYRARGUES   Commune simple        222
+## 3     34032                        BEZIERS   Sous-prfecture       9567
+## 4     34082                    COMBAILLAUX   Commune simple        902
+## 5     34108                     FRONTIGNAN Chef-lieu canton       3984
+## 6     34166                      MONTBLANC   Commune simple       2716
+##   NOM_DEPT                       geometry
+## 1  HERAULT POLYGON ((742075 6272005, 7...
+## 2  HERAULT POLYGON ((770896 6289405, 7...
+## 3  HERAULT POLYGON ((718759 6244261, 7...
+## 4  HERAULT POLYGON ((761606 6284489, 7...
+## 5  HERAULT POLYGON ((758738 6257679, 7...
+## 6  HERAULT POLYGON ((728067 6248191, 7...</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">View</span>(communes)</code></pre></div>
+<p>L’instruction plot permet d’afficher la couche. L’instruction st_geometry permet d’accéder à la variable définissant les géométries.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(<span class="kw">st_geometry</span>(communes))</code></pre></div>
+<p><img src="Vizualisation_files/figure-html/unnamed-chunk-8-1.png" width="768" /></p>
+<p>Afficher la couche avec des parametres graphiques</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(<span class="kw">st_geometry</span>(communes), <span class="dt">col=</span><span class="st">&quot;#aec8f2&quot;</span>, <span class="dt">border=</span><span class="st">&quot;darkblue&quot;</span>, <span class="dt">lwd=</span><span class="dv">1</span>)</code></pre></div>
+<p><img src="Vizualisation_files/figure-html/unnamed-chunk-9-1.png" width="768" /></p>
+</div>
+<div id="introduction-au-sig-avec-r-manipuler-les-informations-spatiales" class="section level2">
+<h2>Introduction au SIG avec R / Manipuler les informations spatiales</h2>
+<p>Nous cherchons à identifier les communes qui ont une partie de leur territoire situé à moins de 20 km du centre de Sete.</p>
+<p>Nous commencçons par extraire la commune de Sète.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">macommune &lt;-<span class="st"> &quot;SETE&quot;</span>
+monpoly &lt;-<span class="st"> </span>communes[communes<span class="op">$</span>NOM_COMM <span class="op">==</span><span class="st"> </span>macommune,]
+<span class="kw">plot</span>(<span class="kw">st_geometry</span>(communes), <span class="dt">col=</span><span class="st">&quot;#aec8f2&quot;</span>, <span class="dt">border=</span><span class="st">&quot;darkblue&quot;</span>, <span class="dt">lwd=</span><span class="dv">1</span>)
+<span class="kw">plot</span>(<span class="kw">st_geometry</span>(monpoly), <span class="dt">col=</span><span class="st">&quot;red&quot;</span>, <span class="dt">border=</span><span class="st">&quot;purple&quot;</span>, <span class="dt">lwd=</span><span class="dv">1</span>, <span class="dt">add=</span>T)</code></pre></div>
+<p><img src="Vizualisation_files/figure-html/unnamed-chunk-10-1.png" width="768" /></p>
+<p>Extraitre le centroide de la commune de Sete.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">moncentre &lt;-<span class="st"> </span><span class="kw">st_centroid</span>(<span class="dt">x =</span> monpoly)</code></pre></div>
+<pre><code>## Warning in st_centroid.sf(x = monpoly): st_centroid assumes attributes are
+## constant over geometries of x</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(<span class="kw">st_geometry</span>(communes), <span class="dt">col=</span><span class="st">&quot;#aec8f2&quot;</span>, <span class="dt">border=</span><span class="st">&quot;darkblue&quot;</span>, <span class="dt">lwd=</span><span class="dv">1</span>)
+<span class="kw">plot</span>(<span class="kw">st_geometry</span>(monpoly), <span class="dt">col=</span><span class="st">&quot;red&quot;</span>, <span class="dt">border=</span><span class="st">&quot;purple&quot;</span>, <span class="dt">lwd=</span><span class="dv">1</span>, <span class="dt">add=</span>T)
+<span class="kw">plot</span>(<span class="kw">st_geometry</span>(moncentre), <span class="dt">pch=</span><span class="dv">20</span>, <span class="dt">col=</span><span class="st">&quot;black&quot;</span>, <span class="dt">cex=</span><span class="dv">2</span>, <span class="dt">add=</span>T)</code></pre></div>
+<p><img src="Vizualisation_files/figure-html/unnamed-chunk-11-1.png" width="768" /></p>
+<p>Calculer une zone tampon</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mydist &lt;-<span class="st"> </span><span class="dv">20000</span>
+
+buff &lt;-<span class="st"> </span><span class="kw">st_buffer</span>(<span class="dt">x =</span> <span class="kw">st_geometry</span>(moncentre), <span class="dt">dist=</span>mydist)
+<span class="kw">plot</span>(<span class="kw">st_geometry</span>(communes), <span class="dt">col=</span><span class="st">&quot;#aec8f2&quot;</span>, <span class="dt">border=</span><span class="st">&quot;darkblue&quot;</span>, <span class="dt">lwd=</span><span class="dv">1</span>)
+<span class="kw">plot</span>(<span class="kw">st_geometry</span>(monpoly), <span class="dt">col=</span><span class="st">&quot;red&quot;</span>, <span class="dt">border=</span><span class="st">&quot;purple&quot;</span>, <span class="dt">lwd=</span><span class="dv">1</span>, <span class="dt">add=</span>T)
+<span class="kw">plot</span>(<span class="kw">st_geometry</span>(moncentre), <span class="dt">pch=</span><span class="dv">20</span>, <span class="dt">col=</span><span class="st">&quot;black&quot;</span>, <span class="dt">cex=</span><span class="dv">2</span>, <span class="dt">add=</span>T)
+<span class="kw">plot</span>(buff, <span class="dt">col=</span><span class="ot">NA</span>, <span class="dt">border=</span><span class="st">&quot;black&quot;</span>, <span class="dt">lty=</span><span class="dv">2</span>,<span class="dt">add=</span>T)</code></pre></div>
+<p><img src="Vizualisation_files/figure-html/unnamed-chunk-12-1.png" width="768" /></p>
+<p>Récupérer la liste des communes</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">communes<span class="op">$</span>buff &lt;-<span class="st"> </span><span class="kw">st_intersects</span>(<span class="kw">st_geometry</span>(communes), <span class="kw">st_geometry</span>(buff), <span class="dt">sparse =</span> <span class="ot">FALSE</span>)
+<span class="kw">head</span>(communes)</code></pre></div>
+<pre><code>## Simple feature collection with 6 features and 6 fields
+## geometry type:  POLYGON
+## dimension:      XY
+## bbox:           xmin: 710431 ymin: 6244261 xmax: 771300 ymax: 6292043
+## epsg (SRID):    NA
+## proj4string:    +proj=lcc +lat_1=49 +lat_2=44 +lat_0=46.5 +lon_0=3 +x_0=700000 +y_0=6600000 +ellps=GRS80 +units=m +no_defs
+##   INSEE_COM                       NOM_COMM           STATUT SUPERFICIE
+## 1     34029                        BELARGA   Commune simple        415
+## 2     34290 SAINT-VINCENT-DE-BARBEYRARGUES   Commune simple        222
+## 3     34032                        BEZIERS   Sous-prfecture       9567
+## 4     34082                    COMBAILLAUX   Commune simple        902
+## 5     34108                     FRONTIGNAN Chef-lieu canton       3984
+## 6     34166                      MONTBLANC   Commune simple       2716
+##   NOM_DEPT                       geometry  buff
+## 1  HERAULT POLYGON ((742075 6272005, 7...  TRUE
+## 2  HERAULT POLYGON ((770896 6289405, 7... FALSE
+## 3  HERAULT POLYGON ((718759 6244261, 7... FALSE
+## 4  HERAULT POLYGON ((761606 6284489, 7... FALSE
+## 5  HERAULT POLYGON ((758738 6257679, 7...  TRUE
+## 6  HERAULT POLYGON ((728067 6248191, 7... FALSE</code></pre>
+<p>Récupérer le nombre de communes à moins de 20 km</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">nb &lt;-<span class="st"> </span><span class="kw">dim</span>(communes[communes<span class="op">$</span>buff <span class="op">==</span><span class="st"> </span>T,])
+nb[<span class="dv">1</span>]</code></pre></div>
+<pre><code>## [1] 40</code></pre>
+<p>Extraction et affichage des communes</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">communes20km &lt;-<span class="st"> </span>communes[communes<span class="op">$</span>buff <span class="op">==</span><span class="st"> </span><span class="ot">TRUE</span>,]
+<span class="kw">plot</span>(<span class="kw">st_geometry</span>(communes), <span class="dt">col=</span><span class="st">&quot;#aec8f2&quot;</span>, <span class="dt">border=</span><span class="st">&quot;darkblue&quot;</span>, <span class="dt">lwd=</span><span class="dv">1</span>)
+<span class="kw">plot</span>(<span class="kw">st_geometry</span>(monpoly), <span class="dt">col=</span><span class="st">&quot;red&quot;</span>, <span class="dt">border=</span><span class="st">&quot;purple&quot;</span>, <span class="dt">lwd=</span><span class="dv">1</span>, <span class="dt">add=</span>T)
+<span class="kw">plot</span>(<span class="kw">st_geometry</span>(moncentre), <span class="dt">pch=</span><span class="dv">20</span>, <span class="dt">col=</span><span class="st">&quot;black&quot;</span>, <span class="dt">cex=</span><span class="dv">2</span>, <span class="dt">add=</span>T)
+<span class="kw">plot</span>(buff, <span class="dt">col=</span><span class="ot">NA</span>, <span class="dt">border=</span><span class="st">&quot;black&quot;</span>, <span class="dt">lty=</span><span class="dv">2</span>,<span class="dt">add=</span>T)
+<span class="kw">plot</span>(<span class="kw">st_geometry</span>(communes20km), <span class="dt">col=</span><span class="ot">NA</span>, <span class="dt">lwd=</span><span class="dv">2</span>, <span class="dt">border=</span><span class="st">&quot;red&quot;</span>, <span class="dt">add=</span>T)</code></pre></div>
+<p><img src="Vizualisation_files/figure-html/unnamed-chunk-15-1.png" width="768" /></p>
+<p>Ajout d’un titre</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(<span class="kw">st_geometry</span>(communes), <span class="dt">col=</span><span class="st">&quot;#aec8f2&quot;</span>, <span class="dt">border=</span><span class="st">&quot;darkblue&quot;</span>, <span class="dt">lwd=</span><span class="dv">1</span>)
+<span class="kw">plot</span>(<span class="kw">st_geometry</span>(monpoly), <span class="dt">col=</span><span class="st">&quot;red&quot;</span>, <span class="dt">border=</span><span class="st">&quot;purple&quot;</span>, <span class="dt">lwd=</span><span class="dv">1</span>, <span class="dt">add=</span>T)
+<span class="kw">plot</span>(<span class="kw">st_geometry</span>(moncentre), <span class="dt">pch=</span><span class="dv">20</span>, <span class="dt">col=</span><span class="st">&quot;black&quot;</span>, <span class="dt">cex=</span><span class="dv">2</span>, <span class="dt">add=</span>T)
+<span class="kw">plot</span>(buff, <span class="dt">col=</span><span class="ot">NA</span>, <span class="dt">border=</span><span class="st">&quot;black&quot;</span>, <span class="dt">lty=</span><span class="dv">2</span>,<span class="dt">add=</span>T)
+<span class="kw">plot</span>(<span class="kw">st_geometry</span>(communes20km), <span class="dt">col=</span><span class="ot">NA</span>, <span class="dt">lwd=</span><span class="dv">2</span>, <span class="dt">border=</span><span class="st">&quot;red&quot;</span>, <span class="dt">add=</span>T)
+montitre &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="st">&quot;Il y a &quot;</span>, nb[<span class="dv">1</span>], <span class="st">&quot; communes situées à moins de &quot;</span>, mydist<span class="op">/</span><span class="dv">1000</span>, <span class="st">&quot;km de &quot;</span>,<span class="kw">tolower</span>(macommune))
+<span class="kw">title</span>(montitre)</code></pre></div>
+<p><img src="Vizualisation_files/figure-html/unnamed-chunk-16-1.png" width="768" /></p>
+<p>Export (si besoin)</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">st_write</span>(<span class="dt">obj =</span> communes20km, <span class="dt">dsn =</span> <span class="st">&quot;outputs/resultat.shp&quot;</span>)</code></pre></div>
+</div>
+<div id="a-vous-de-jouer" class="section level2">
+<h2>A vous de jouer !</h2>
+<p>Reproduisez cette procédure avec la commune et la distance de votre choix.</p>
+<p>Pour accéder au listing des communes d’Hérault</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">communes<span class="op">$</span>NOM_COMM</code></pre></div>
+</div>
+</div>
+<div id="exo-2---cartes-en-figures-proportionnels" class="section level1">
+<h1>Exo 2 - Cartes en figurés proportionnels</h1>
+<div id="objectifs" class="section level2">
+<h2>Objectifs :</h2>
+<ul>
+<li>Thématique : Réaliser une carte des catégories Socio professionnelles.</li>
+<li>Espace d’étude : Occitanie, communes</li>
+<li>Visualisation associée : carte en figurés proportionnels (+ cartogrammes de Dorling)</li>
+<li>packages utilisés : sf, cartography, cartogram, readxl</li>
+</ul>
+<p>Créer un nouveau fichier “Exo2.R”.</p>
+</div>
+<div id="chargement-et-preparation-des-donnees" class="section level2">
+<h2>Chargement et préparation des données</h2>
+<p>Pour bien commencer, il est fondamental de jeter un oeil au fichier d’entrée pour comprendre son organisation et savoir comment l’importer sous R.</p>
+<p>Ouvrez le fichier data/France/INSEE/pop-act2554-csp-cd-6814.xls Nous nous intéressons ici à l’onglet “COM_2014”.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">&quot;sf&quot;</span>)
+<span class="kw">library</span>(<span class="st">&quot;readxl&quot;</span>)</code></pre></div>
+</div>
+<div id="visualisation-carte-en-figure-proportionnel" class="section level2">
+<h2>Visualisation : carte en figuré proportionnel</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">&quot;cartography&quot;</span>)</code></pre></div>
+<p>variable visuelle taille adaptée aux caractères quantitatifs absolus.</p>
+</div>
+<div id="visualisation-carte-combinant-figure-proportionnel-et-typologie" class="section level2">
+<h2>Visualisation : carte combinant figuré proportionnel et typologie</h2>
+<p>variable visuelle taille + variable visuelle couleur</p>
+</div>
+<div id="visualisation-cartogramme-de-dorling" class="section level2">
+<h2>Visualisation : cartogramme de Dorling</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">&quot;cartogram&quot;</span>)</code></pre></div>
+</div>
+</div>
+<div id="exo-3--" class="section level1">
+<h1>Exo 3 -</h1>
+<div id="chargement-des-packages-necessaires" class="section level2">
+<h2>Chargement des packages nécessaires</h2>
+<p><img src = "pics/formes_distribution.png"></img></p>
+<p>xxx</p>
+<p><img src = "pics/carroyages.png"></img></p>
+<p>xxx</p>
+</div>
+</div>
+<div id="exo-4---cartes-de-discontinuite" class="section level1">
+<h1>Exo 4 - Cartes de discontinuité</h1>
+<div id="objectifs-1" class="section level2">
+<h2>Objectifs :</h2>
+<ul>
+<li>Thématique : Les inégalités d’IDH et/ou d’espérance de vie</li>
+<li>Espace d’étude : Le Monde, pays.</li>
+<li>Visualisation associée : carte chorplèthe, discontinuités</li>
+<li>packages utilisés : sf, cartography, rnaturalearth, readxl, countrycode</li>
+</ul>
+<p><img src="pics/discontinuit%C3%A9s.png"></img></p>
+</div>
+<div id="import-du-fond-de-carte" class="section level2">
+<h2>Import du fond de carte</h2>
+<p>méthode 1 : à la main (après téléchargement sur le site Natural Earth)</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">&quot;sf&quot;</span>)
+countries &lt;-<span class="st"> </span><span class="kw">st_read</span>(<span class="dt">dsn =</span> <span class="st">&quot;data/world/naturalearth/ne_110m_admin_0_countries.shp&quot;</span>, <span class="dt">stringsAsFactors =</span> F)  </code></pre></div>
+<p>Méthode 2 : directement via R</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">&quot;sf&quot;</span>)
+url &lt;-<span class="st"> &quot;https://www.naturalearthdata.com/http//www.naturalearthdata.com/download/110m/cultural/ne_110m_admin_0_countries.zip&quot;</span>
+<span class="kw">download.file</span>(<span class="dt">url =</span> url, <span class="dt">destfile =</span> <span class="st">&quot;data/download/countries.zip&quot;</span>)
+<span class="kw">unzip</span>(<span class="st">&quot;data/download/countries.zip&quot;</span>, <span class="dt">exdir =</span> <span class="st">&quot;data/download&quot;</span>, <span class="dt">unzip =</span> <span class="st">&quot;internal&quot;</span>)
+<span class="kw">file.remove</span>(<span class="st">&quot;data/download/countries.zip&quot;</span>)
+countries &lt;-<span class="st"> </span><span class="kw">st_read</span>(<span class="dt">dsn =</span> <span class="st">&quot;data/download/ne_110m_admin_0_countries.shp&quot;</span>, <span class="dt">stringsAsFactors =</span> F)</code></pre></div>
+<p>Méthode 3 : directement via R</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">&quot;rnaturalearth&quot;</span>)
+countries &lt;-<span class="st"> </span><span class="kw">ne_countries</span>(<span class="dt">scale =</span> <span class="dv">50</span>, <span class="dt">type =</span> <span class="st">&quot;countries&quot;</span>, <span class="dt">continent =</span> <span class="ot">NULL</span>,
+                          <span class="dt">country =</span> <span class="ot">NULL</span>, <span class="dt">geounit =</span> <span class="ot">NULL</span>, <span class="dt">sovereignty =</span> <span class="ot">NULL</span>,
+                          <span class="dt">returnclass =</span> <span class="st">&quot;sf&quot;</span>)</code></pre></div>
+<p>Le fond de carte peut être visualisé avec l’instruction plot</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(<span class="kw">st_geometry</span>(countries))</code></pre></div>
+<p><img src="Vizualisation_files/figure-html/unnamed-chunk-25-1.png" width="768" /></p>
+<p>On ne conserve que les champs utiles. On les renomme.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">countries &lt;-<span class="st"> </span>countries[,<span class="kw">c</span>(<span class="st">&quot;adm0_a3&quot;</span>, <span class="st">&quot;admin&quot;</span>, <span class="st">&quot;geometry&quot;</span>)]
+<span class="kw">colnames</span>(countries) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;id&quot;</span>,<span class="st">&quot;name&quot;</span>,<span class="st">&quot;geometry&quot;</span>)</code></pre></div>
+<p>On Supprime l’Antarctique</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">countries &lt;-<span class="st"> </span>countries[countries<span class="op">$</span>id <span class="op">!=</span><span class="st"> &quot;ATA&quot;</span>,]</code></pre></div>
+<p>On supprime les lignes vides</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">countries &lt;-<span class="st"> </span>countries[<span class="op">!</span><span class="kw">is.na</span>(countries<span class="op">$</span>id),]</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(<span class="kw">st_geometry</span>(countries))</code></pre></div>
+<p><img src="Vizualisation_files/figure-html/unnamed-chunk-29-1.png" width="768" /></p>
+</div>
+<div id="import-des-donnees-atributaires" class="section level2">
+<h2>Import des données atributaires</h2>
+<p>Import des données sur l’éspérance de vie (source : Banque mondiale)</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">&quot;readxl&quot;</span>)
+file &lt;-<span class="st">&quot;data/world/worldbank/API_SP.DYN.LE00.IN_DS2_en_excel_v2_10081535.xls&quot;</span>
+sheet &lt;-<span class="st"> &quot;Data&quot;</span>
+lifexp &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="kw">read_excel</span>(file, <span class="dt">skip =</span> <span class="dv">3</span>, <span class="dt">sheet =</span> sheet))
+lifexp &lt;-<span class="st"> </span>lifexp[,<span class="kw">c</span>(<span class="st">&quot;Country.Code&quot;</span>,<span class="st">&quot;Country.Name&quot;</span>,<span class="st">&quot;X2016&quot;</span>)]
+<span class="kw">colnames</span>(lifexp) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;id&quot;</span>,<span class="st">&quot;name&quot;</span>,<span class="st">&quot;lifexp2016&quot;</span>)
+lifexp<span class="op">$</span>lifexp2016 &lt;-<span class="st"> </span><span class="kw">as.numeric</span>(<span class="kw">as.character</span>(lifexp<span class="op">$</span>lifexp2016))</code></pre></div>
+<p>Import des données sur l’Indice de deveoppement humain (source : Human Development Report)</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">file &lt;-<span class="st">&quot;data/world/hdr/Human Development Index (HDI).csv&quot;</span>
+hdi &lt;-<span class="st"> </span><span class="kw">read.csv2</span>(<span class="dt">file =</span> file, <span class="dt">sep =</span> <span class="st">&quot;,&quot;</span>,<span class="dt">skip =</span> <span class="dv">1</span>)
+hdi &lt;-<span class="st"> </span>hdi[,<span class="kw">c</span>(<span class="st">&quot;Country&quot;</span>,<span class="st">&quot;X2016&quot;</span>)]</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(hdi,<span class="dv">4</span>)</code></pre></div>
+<pre><code>##        Country X2016
+## 1  Afghanistan 0.494
+## 2      Albania 0.782
+## 3      Algeria 0.753
+## 4      Andorra 0.856</code></pre>
+<p>Le tableau de données sur l’IDH ne possède pas de codes géographiques, mais uniquement le nom des pays. Cela rend la jointure avec le fond de carte compliquée. Une solution : le package <b>countrycode</b></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">&quot;countrycode&quot;</span>)
+hdi<span class="op">$</span>id &lt;-<span class="st"> </span><span class="kw">countrycode</span>(hdi<span class="op">$</span>Country, <span class="st">&#39;country.name&#39;</span>, <span class="st">&#39;iso3c&#39;</span>)</code></pre></div>
+<pre><code>## Warning in countrycode(hdi$Country, &quot;country.name&quot;, &quot;iso3c&quot;): Some values were not matched unambiguously:  Eswatini (Kingdom of)</code></pre>
+<p>Un peu de mise en forme. Les codes sont bien là. C’est presque magique… Mais attention, dans la pratique, une vérification manuelle s’impose.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">hdi &lt;-<span class="st"> </span>hdi[,<span class="kw">c</span>(<span class="st">&quot;id&quot;</span>,<span class="st">&quot;Country&quot;</span>,<span class="st">&quot;X2016&quot;</span>)]
+<span class="kw">colnames</span>(hdi) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;id&quot;</span>,<span class="st">&quot;name&quot;</span>,<span class="st">&quot;hdi2016&quot;</span>)
+hdi<span class="op">$</span>hdi2016 &lt;-<span class="st"> </span><span class="kw">as.numeric</span>(<span class="kw">as.character</span>(hdi<span class="op">$</span>hdi2016))  
+<span class="kw">head</span>(hdi,<span class="dv">4</span>)</code></pre></div>
+<pre><code>##    id         name hdi2016
+## 1 AFG  Afghanistan   0.494
+## 2 ALB      Albania   0.782
+## 3 DZA      Algeria   0.753
+## 4 AND      Andorra   0.856</code></pre>
+</div>
+<div id="cartographie" class="section level2">
+<h2>Cartographie</h2>
+<p>Chargement du package</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">&quot;cartography&quot;</span>)</code></pre></div>
+<p>Changer la projection du fond de carte (voir le site <a href="http://spatialreference.org" class="uri">http://spatialreference.org</a>)</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">countries &lt;-<span class="st"> </span><span class="kw">st_transform</span>(countries, <span class="st">&quot;+proj=cea +lon_0=0 +lat_ts=45 +x_0=0 +y_0=0 +ellps=WGS84 +units=m +no_defs &quot;</span>)
+<span class="kw">plot</span>(<span class="kw">st_geometry</span>(countries))</code></pre></div>
+<p><img src="Vizualisation_files/figure-html/unnamed-chunk-36-1.png" width="768" /></p>
+<p>Jointures des deux fichiers de données</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">countries &lt;-<span class="st"> </span><span class="kw">merge</span>(countries, lifexp, <span class="dt">by=</span><span class="st">&quot;id&quot;</span>, <span class="dt">all.x=</span><span class="ot">TRUE</span>)
+countries &lt;-<span class="st"> </span><span class="kw">merge</span>(countries, hdi, <span class="dt">by=</span><span class="st">&quot;id&quot;</span>, <span class="dt">all.x=</span><span class="ot">TRUE</span>)
+countries &lt;-<span class="st"> </span>countries[,<span class="kw">c</span>(<span class="st">&quot;id&quot;</span>,<span class="st">&quot;name.x&quot;</span>,<span class="st">&quot;lifexp2016&quot;</span>,<span class="st">&quot;hdi2016&quot;</span>,<span class="st">&quot;geometry&quot;</span>)]
+<span class="kw">colnames</span>(countries)[<span class="dv">2</span>] &lt;-<span class="st"> &quot;name&quot;</span></code></pre></div>
+<p><b>On travaille sur l’indice de développement humain</b></p>
+<p>analyse de la distribution</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">var &lt;-<span class="st"> </span>countries<span class="op">$</span>hdi2016
+<span class="kw">hist</span>(countries<span class="op">$</span>hdi2016, <span class="dt">probability =</span> <span class="ot">TRUE</span>, <span class="dt">nclass =</span> <span class="dv">30</span>)</code></pre></div>
+<p><img src="Vizualisation_files/figure-html/unnamed-chunk-38-1.png" width="768" /></p>
+<p>On choisit une discretisation par la méthode des <b>quantiles</b> sans classe centrale</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">breaks &lt;-<span class="st"> </span><span class="kw">getBreaks</span>(<span class="dt">v =</span> var, <span class="dt">nclass =</span> <span class="dv">6</span>, <span class="dt">method =</span> <span class="st">&quot;quantile&quot;</span>)
+cols &lt;-<span class="st"> </span><span class="kw">carto.pal</span>(<span class="dt">pal1=</span><span class="st">&quot;blue.pal&quot;</span>, <span class="dt">n1 =</span> <span class="dv">3</span>, <span class="dt">pal2 =</span> <span class="st">&quot;orange.pal&quot;</span>, <span class="dt">n2 =</span> <span class="dv">3</span>, <span class="dt">middle =</span> <span class="ot">FALSE</span>, <span class="dt">transparency =</span> <span class="ot">FALSE</span>)</code></pre></div>
+<p>Réalisation de la carte</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">layoutLayer</span>(<span class="dt">extent =</span> countries,
+            <span class="dt">bg=</span><span class="st">&quot;#EEEEEE&quot;</span>,
+            <span class="dt">title =</span> <span class="st">&quot;Indice de développement humain en 2016&quot;</span>,
+            <span class="dt">scale =</span> <span class="ot">NULL</span>,
+            <span class="dt">sources =</span> <span class="st">&quot;Human development Report, 2018&quot;</span>,
+            <span class="dt">author =</span> <span class="st">&quot;les serial mappers&quot;</span>
+            )
+<span class="kw">choroLayer</span>(<span class="dt">x =</span> countries, 
+           <span class="dt">var =</span> <span class="st">&quot;hdi2016&quot;</span>,
+           <span class="dt">breaks =</span> breaks,
+           <span class="dt">col =</span> cols,
+           <span class="dt">border =</span> <span class="st">&quot;white&quot;</span>,
+           <span class="dt">lwd=</span><span class="fl">0.2</span>,
+           <span class="dt">add =</span> <span class="ot">TRUE</span>,
+           <span class="dt">legend.pos =</span> <span class="st">&quot;topleft&quot;</span>,
+           <span class="dt">legend.title.txt =</span> <span class="st">&quot;IDH, 2016&quot;</span>,
+           <span class="dt">legend.values.rnd =</span> <span class="dv">2</span>)</code></pre></div>
+<p><img src="Vizualisation_files/figure-html/unnamed-chunk-40-1.png" width="768" /></p>
+</div>
+<div id="et-si-on-ajoutait-des-lignes-de-discontinuites-a-cette-carte" class="section level2">
+<h2>Et si on ajoutait des lignes de discontinuités à cette carte?</h2>
+<p>L’instruction getBorders (du package cartography) permet d’extraire les frontières entre les unités spatiales.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">borders &lt;-<span class="st"> </span><span class="kw">getBorders</span>(countries)
+<span class="kw">plot</span>(<span class="kw">st_geometry</span>(borders), <span class="dt">col=</span><span class="st">&quot;black&quot;</span>, <span class="dt">lwd=</span><span class="dv">1</span>)</code></pre></div>
+<p><img src="Vizualisation_files/figure-html/unnamed-chunk-41-1.png" width="768" /></p>
+<p>Quid des discontinuités paritimes ? Par exemple entre l’Italie et la Tunisie ? Ou entre le Maroc et l’Espagne ? L’instruction getOuterBorders (package cartography) permet de les générer. Cette instruction peut prendre un peu de temps.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">outer &lt;-<span class="st"> </span><span class="kw">getOuterBorders</span>(<span class="dt">x =</span> countries, <span class="dt">res =</span> <span class="dv">100000</span>, <span class="dt">width=</span><span class="dv">500000</span>)
+<span class="kw">plot</span>(<span class="kw">st_geometry</span>(borders), <span class="dt">col=</span><span class="st">&quot;#CCCCCC&quot;</span>, <span class="dt">lwd=</span><span class="dv">1</span>)
+<span class="kw">plot</span>(<span class="kw">st_geometry</span>(outer), <span class="dt">col=</span><span class="st">&quot;red&quot;</span>, <span class="dt">lwd=</span><span class="dv">1</span>, <span class="dt">add=</span>T)</code></pre></div>
+<p><img src="Vizualisation_files/figure-html/unnamed-chunk-42-1.png" width="768" /></p>
+<p>On assemble les deux couches avec rbind</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">b &lt;-<span class="st"> </span><span class="kw">rbind</span>(borders,outer)</code></pre></div>
+<p><b>Tout est prêt pour réaliser une carte de discontinuités</b></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># 1 - la carte choroplèthe</span>
+<span class="kw">layoutLayer</span>(<span class="dt">extent =</span> countries,
+            <span class="dt">bg=</span><span class="st">&quot;#EEEEEE&quot;</span>,
+            <span class="dt">title =</span> <span class="st">&quot;Indice de développement humain en 2016&quot;</span>,
+            <span class="dt">scale =</span> <span class="ot">NULL</span>,
+            <span class="dt">sources =</span> <span class="st">&quot;Human development Report, 2018&quot;</span>,
+            <span class="dt">author =</span> <span class="st">&quot;les serial mappers&quot;</span>
+            )
+<span class="kw">choroLayer</span>(<span class="dt">x =</span> countries, 
+           <span class="dt">var =</span> <span class="st">&quot;hdi2016&quot;</span>,
+           <span class="dt">breaks =</span> breaks,
+           <span class="dt">col =</span> cols,
+           <span class="dt">border =</span> <span class="st">&quot;white&quot;</span>,
+           <span class="dt">lwd=</span><span class="fl">0.2</span>,
+           <span class="dt">add =</span> <span class="ot">TRUE</span>,
+           <span class="dt">legend.pos =</span> <span class="st">&quot;topleft&quot;</span>,
+           <span class="dt">legend.title.txt =</span> <span class="st">&quot;IDH, 2016&quot;</span>,
+           <span class="dt">legend.values.rnd =</span> <span class="dv">2</span>)
+
+<span class="co"># 2 - les discontinuités</span>
+
+<span class="kw">discLayer</span>(<span class="dt">x =</span> b, <span class="dt">df =</span> countries,
+          <span class="dt">var =</span> <span class="st">&quot;hdi2016&quot;</span>, <span class="dt">col=</span><span class="st">&quot;black&quot;</span>, <span class="dt">nclass=</span><span class="dv">4</span>,
+          <span class="dt">method=</span><span class="st">&quot;quantile&quot;</span>, <span class="dt">threshold =</span> <span class="fl">0.25</span>, <span class="dt">sizemin =</span> <span class="fl">0.2</span>,
+          <span class="dt">sizemax =</span> <span class="dv">8</span>, <span class="dt">type =</span> <span class="st">&quot;abs&quot;</span>, 
+          <span class="dt">legend.title.txt =</span> <span class="st">&quot;Discontinuities</span><span class="ch">\n</span><span class="st">absolues&quot;</span>,
+          <span class="dt">legend.pos =</span> <span class="st">&quot;bottomleft&quot;</span>, <span class="dt">add=</span><span class="ot">TRUE</span>)</code></pre></div>
+<p><img src="Vizualisation_files/figure-html/unnamed-chunk-44-1.png" width="768" /></p>
+</div>
+</div>
+<div id="bonus" class="section level1">
+<h1>BONUS</h1>
+<div id="utiliser-des-donnees-osm" class="section level2">
+<h2>Utiliser des données OSM</h2>
+</div>
+</div>
+<div id="ressources" class="section level1">
+<h1>Ressources</h1>
+<ul>
+<li>BEGUIN Michèle, PUMAIN Denise, La représentation des données géographiques, Statistique et cartographie, coll. Cursus, Armand Colin, nouvelle édition 2000, 192p.</li>
+<li>BERTIN Jacques, Sémiologie graphique, Monton-Gauthier-Villars, 1967, 1973, 432 p. Disponible à ce jour dans la collection Réimpression de l’EHESS, 1998.</li>
+<li>BERTIN Jacques, La graphique et le traitement graphique de l’information, Flammarion, 1977, 280 p.</li>
+<li>BRUNET Roger, La carte mode d’emploi, Fayard-Reclus, 1987, 270p.</li>
+<li>ElementR (Groupe), R et espace, traitement de l’information géographique, 2014, Framabook.</li>
+<li>LAMBERT Nicolas : Carnet de recherche neocarto : <a href="https://neocarto.hypotheses.org" class="uri">https://neocarto.hypotheses.org</a></li>
+<li>LAMBERT Nicolas, ZANIN Christine : « Manuel de cartographie. Principes, méthodes, applications », cursus, Armand Colin, 18 mai 2016, 224p.</li>
+<li>Giraud Timothée : Carnet de recherche rgeomatic : <a href="https://rgeomatic.hypotheses.org/" class="uri">https://rgeomatic.hypotheses.org/</a></li>
+<li>ZANIN Christine, TREMELO Marie-Laure, Savoir faire une carte, Aide à la conception et à la réalisation d’une carte thématique univariée, coll. Sup géographie, Belin, 2003, 200p.</li>
+</ul>
+<p><img src = "pics/baniere_nervure_EB_2.jpg"></img></p>
+</div>
+</div>
+
+
+</div>
+
+<div id="postamble" data-toggle="wy-nav-shift" class="status">
+<p class="author"><span class="glyphicon glyphicon-user"></span> Nicolas Lambert, Ronan Ysebaert</p>
+<p class="date"><span class="glyphicon glyphicon-calendar"></span> Sète, 16 nov. 2018</p>
+</div>
+
+
+<script>
+$(document).ready(function () {
+ 	    $('#content img')
+ 	  .addClass("image-lb");
+  $('#content').magnificPopup({
+	      type:'image',
+	      closeOnContentClick: false,
+	      delegate: 'img',
+	      gallery: {enabled: true },
+	      image: {
+	        verticalFit: true,
+          titleSrc: 'alt'
+	      }
+ 	    });
+ 	});
+</script>
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
