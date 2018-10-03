@@ -23,7 +23,6 @@ View(data) # vOIR Si le fichier a correctement été importé.
 # Nouveaux champs
 # Création de nouvelles colonnes par aggrégation de CSP (emploi + chômage) + arrondi sans décimale
 # affectation d'un nom clair + création d'une colonne total (calcul pourcentage)
-colnames(data)
 
 data$id <- paste0(data$DR, data$CR) # Creation du code commune
 data[,"agr"]<- round(data[7] + data[8],0) # Actifs + chomeurs par CSP
@@ -32,6 +31,7 @@ data[,"sup"] <- round(data[11] + data[12],0)
 data[,"int"] <- round(data[13] + data[14],0)
 data[,"emp"] <- round(data[15] + data[16],0)
 data[,"ouv"] <- round(data[17] + data[18],0)
+data[,"ouv_chom"] <- round(data[18],0)
 data$total <- data$agr + data$art + data$sup + data$int + data$emp + data$ouv
 
 View(data)
@@ -39,7 +39,7 @@ View(data)
 
 # Import et visualisation du fond de carte
 communes <- st_read(dsn = "data/Occitanie/occitanie.shp", stringsAsFactors = F)
-plot(st_geometry(communes),col="black", border="white", lwd=0.1)
+plot(st_geometry(communes),col="white", border="black", lwd=0.1)
 
 # Jointure
 # Un petit texte décrivant l'importance de la chose. 
@@ -47,9 +47,9 @@ communes <- merge(x = communes, y = data, by.x = "INSEE_COM", by.y = "id", all.x
 
 # Nettoyage et mise en forme du tableau
 colnames(communes)
-fields <- c("INSEE_COM", "LIBELLE", "agr", "art", "sup", "int", "emp", "ouv", "total",  "geometry")
+fields <- c("INSEE_COM", "LIBELLE", "agr", "art", "sup", "int", "emp", "ouv","ouv_chom", "total",  "geometry")
 communes <- communes[,fields]
-colnames(communes) <-  c("id", "name", "agr", "art", "sup", "int", "emp", "ouv", "total",  "geometry")
+colnames(communes) <-  c("id", "name", "agr", "art", "sup", "int", "emp", "ouv","ouv_chom", "total",  "geometry")
 View(communes)
 
 # Premiere carte
@@ -129,23 +129,8 @@ title("Ouvriers et cadres en Occitanie, 2014")
 
 # Ex / changer pour ouvrier / employé et regarder l'histogramme 
 
-# Solution
-
-sheet <- "COM_2014"
-data <- data.frame(read_excel("data/France/INSEE/pop-act2554-csp-cd-6814.xlsx", skip = 15, sheet = sheet))
-data <- data[data[,1] == "76",]
-data$id <- paste0(data$DR, data$CR)
-data[,"ouv_tot"] <- round(data[17] + data[18],0)
-data[,"ouv_act"] <- round(data[17],0)
-data[,"ouv_chom"] <- round(data[18],0)
-communes <- st_read(dsn = "data/Occitanie/occitanie.shp", stringsAsFactors = F)
-communes <- merge(x = communes, y = data, by.x = "INSEE_COM", by.y = "id", all.x=T)
-fields <- c("INSEE_COM", "LIBELLE", "ouv_tot", "ouv_act", "ouv_chom",  "geometry")
-communes <- communes[,fields]
-colnames(communes) <-  c("id", "name", "ouv_tot","ouv_act","ouv_chom","geometry")
 communes$typo <- "Indéterminé"
-
-communes$r <- communes$ouv_chom / communes$ouv_tot
+communes$r <- communes$ouv_chom / communes$ouv
 communes$r[is.na(communes$r)] <- 0
 communes[communes$r >= 0.2,"typo"] <- "Supérieur à 20 %"
 communes[communes$r < 0.2,"typo"] <- "Inférieur à 20 %"

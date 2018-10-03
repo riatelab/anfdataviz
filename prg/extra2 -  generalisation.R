@@ -7,7 +7,7 @@ setwd("/home/nlambert/Documents/ANF/R")
 library("sf")
 library("rmapshaper")
 
-countries <- st_read(dsn = "data/ne_110m_admin_0_countries.shp", stringsAsFactors = F)
+countries <- st_read(dsn = "data/world/naturalearth/ne_110m_admin_0_countries.shp", stringsAsFactors = F)
 
 plot(st_geometry(countries))
 

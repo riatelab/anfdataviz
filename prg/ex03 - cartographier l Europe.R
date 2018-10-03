@@ -7,18 +7,15 @@
 # Obj 3 : Introduire les pb liés au MAUP et construire des representations permettant de s'en abstraire
 # Obj 4 : Construire un modele cartographique en R. 
 
-# ------------------------
-# Template cartographique
-# ------------------------
+# -----------------------------------------------
+# Chargement et visualisation des fonds de carte
+# -----------------------------------------------
+setwd("C:/MyCore/ANF2018 - R geoviz")
 
 library("sf")
-library("rmapshaper") # J'ai generalise le fond de carte initial qui contenait des erreurs topologiques / Étape à shinter
 
 # Fond de carte principal
-# Fond avec erreurs topo
-shp <- "data/Europe/GREAT/GEOM_EU34_NUTS13/geom_eu34_nuts13.shp"
-regions <- st_read(dsn = shp, stringsAsFactors = F) 
-regions <- ms_simplify(regions, keep = 0.9999)
+regions <- st_read(dsn = "data/Europe/GREAT/GEOM_EU34_NUTS13/geom_eu34_nuts13.shp", stringsAsFactors = F) 
 
 # Elements d'habillage
 borders <- st_read("data/Europe/GREAT/OTHERS/borders_EU34.shp", stringsAsFactors = F)
@@ -47,21 +44,19 @@ plot(st_geometry(seaboxes), col = NA, border = "#bbbdc0", lwd = 0.15, add = TRUE
 # ------------------------
 
 library("eurostat")
-library("reshape2") # For DataFrame Manipulation
+library("reshape2") 
 
 # POPULATION
-var <- "demo_r_pjangrp3"
+var <- "demo_r_pjangrp3" # Table Eurostat d'intérêt
 data <- get_eurostat(var, time_format = "num") # Telecharger la table ESTAT
-data <- subset(data, data$sex == "T") # Filtre des dimensions de la table
-data <- subset(data, data$age == "TOTAL") # Filtre des dimensions de la table
-data <- dcast(data, geo ~ time, value.var = "values")
-head(data)
-colnames(data) <- c("geo","POP_2014","POP_2015","POP_2016","POP_2017")
+data <- subset(data, data$sex == "T") # Filtre des dimensions du tibble
+data <- subset(data, data$age == "TOTAL") # Filtre des dimensions du tibble
+data <- dcast(data, geo ~ time, value.var = "values") # Transformation en dataframe des dimensions restantes
+colnames(data) <- c("geo","POP_2014","POP_2015","POP_2016","POP_2017") # Renommer les colonnes du dataframe de façon explicite
 
 # SURFACE
 var <- "reg_area3"
 area <- get_eurostat(var, time_format = "num") # Telecharger la table ESTAT
-str(area)
 area <- subset(area, area$landuse == "TOTAL") # Filtre des dimensions de la table
 area <- dcast(area, geo ~ time, value.var = "values")
 colnames(area) <- c("geo","AREA")
@@ -69,26 +64,21 @@ colnames(area) <- c("geo","AREA")
 # PIB
 var <- "nama_10r_3gdp"
 gdp <- get_eurostat(var, time_format = "num")
-str(gdp)
-levels(gdp$unit)
 gdp <- subset(gdp, gdp$unit == "MIO_EUR")
 gdp <- dcast(gdp, geo ~ time, value.var = "values")
 fields <- c("geo", "2014", "2015", "2016") # On ne garde que les valeurs de PIB correspondant aux valeurs de population disoponibles
 gdp <- gdp[,fields]
 colnames(gdp) <- c("geo","GDP_2014","GDP_2015","GDP_2016")
-head(gdp)
 
 # Jointure
 regions <- merge(x = regions, y = data, by.x = "id", by.y = "geo", all.x=T) # population
 regions <- merge(x = regions, y = area, by.x = "id", by.y = "geo", all.x=T) # surface
 regions <- merge(x = regions, y = gdp, by.x = "id", by.y = "geo", all.x=T) # surface
 
-head(regions)
-
+write_sf(obj = regions, dsn = "data/Europe/regions_data.shp")
 # ------------------------
 # CARTOGRAPHIER LA DENSITE DE POPULATION DANS LA MAILLE (NUTS3)
 # ------------------------
-library(cartography)
 
 # Quelle annee ? Analyse de completude
 apply(regions,2,function(x) sum(is.na(x)))
@@ -96,19 +86,42 @@ apply(regions,2,function(x) sum(is.na(x)))
 # Calcul du ratio
 regions$DENS_2017 <- regions$POP_2017 / regions$AREA
 
+
+# 4 graphiques par plot
+par(mfrow=c(2,2))
+
+# Methode discretisation (quantiles)
+breaks <- getBreaks(v = regions$DENS_2017, nclass = 10, method = "quantile")
+hist(regions$DENS_2017, probability = TRUE, breaks = breaks, col = "#F0D9F9", xlim = c(0,4000), main = "Quantiles")
+abline(v = median(regions$DENS_2017, na.rm = T), col = "blue", lwd = 3)
+abline(v = mean(regions$DENS_2017, na.rm = T), col = "red", lwd = 3)
+
+# Methode discretisation (intervalles égaux)
+breaks <- getBreaks(v = regions$DENS_2017, nclass = 10, method = "equal")
+hist(regions$DENS_2017, probability = TRUE, breaks = breaks, col = "#F0D9F9", xlim = c(0,4000), main = "Intervalles égaux")
+abline(v = median(regions$DENS_2017, na.rm = T), col = "blue", lwd = 3)
+abline(v = mean(regions$DENS_2017, na.rm = T), col = "red", lwd = 3)
+
+# Methode discretisation (moyenne-écart type)
+breaks <- getBreaks(v = regions$DENS_2017, nclass = 10, method = "msd", k=1, middle = TRUE)
+hist(regions$DENS_2017, probability = TRUE, breaks = breaks, col = "#F0D9F9", xlim = c(0,4000), main = "Moyenne/écart-type")
+med <- median(regions$DENS_2017, na.rm = T)
+abline(v = median(regions$DENS_2017, na.rm = T), col = "blue", lwd = 3)
+abline(v = mean(regions$DENS_2017, na.rm = T), col = "red", lwd = 3)
+
+# Methode discretisation (geom)
+breaks <- getBreaks(v = regions$DENS_2017, nclass = 10, method = "geom")
+hist(regions$DENS_2017, probability = TRUE, breaks = breaks, col = "#F0D9F9", xlim = c(0,4000), main = "Progression géométrique")
+abline(v = median(regions$DENS_2017, na.rm = T), col = "blue", lwd = 3)
+abline(v = mean(regions$DENS_2017, na.rm = T), col = "red", lwd = 3)
+
 # Choix de la palette
 display.carto.all(10)
 cols <- carto.pal(pal1 = "red.pal", n1 = 10)
 
-# Methode discretisation (quantiles)
-breaks <- getBreaks(v = regions$DENS_2017, nclass = 10, method = "quantile")
-hist(regions$DENS_2017, probability = TRUE, breaks = breaks, col = "#F0D9F9")
-rug(regions$DENS_2017)
-med <- median(regions$DENS_2017)
-abline(v = med, col = "blue", lwd = 3)
-
 # Mise en page (back)
 par(mar = c(0.5,0.5,1.5,0.5)) 
+par(mfrow=c(1,1))
 # Ajuster les marges
 plot(st_geometry(background), col = "#e0ecff", border = NA, add =FALSE)
 plot(st_geometry(countries), col = "#c6c4c4", border = NA, add =TRUE)
@@ -123,8 +136,8 @@ choroLayer(x = regions,
            border = NA,
            add = TRUE,
            legend.pos = "topleft",
-           legend.title.txt = "Population density, 2017",
-           legend.values.rnd = 2)
+           legend.title.txt = "Densité de population, 2017 (hab/km²)",
+           legend.values.rnd = 0)
 
 # Mise en page (top)
 plot (st_geometry(remote), col = "#e6e6e6", border =NA, add=TRUE)
@@ -135,30 +148,17 @@ plot(st_geometry(seaboxes), col = NA, border = "#bbbdc0", lwd = 0.15, add = TRUE
 
 
 # Sources + elements d'habillage
-layoutLayer(title = "Population density in Europe Union, EFTA and Candidation Countries",
+layoutLayer(title = "Densité de population dans les NUTS3 européens, 2017",
             author = "Serial Mappers, 2018", sources = "Eurostat, 2018",
             scale = 200, tabtitle = TRUE,
-            frame = FALSE,theme = "sand.pal",
+            frame = FALSE,theme = "red.pal",
             south = TRUE)
 
 #############
 # A VOUS DE JOUER / COMPRENDRE L'IMPORTANCE DES DISCRETISATIONS
 #############
-
-# Reproduire la carte en utilisant d'autres methodes de discretisation (Intervalles égaux et progression geometrique). Que remarquez-vous ? 
 # Solution 
-breaks <- getBreaks(v = regions$DENS_2017, nclass = 10, method = "equal")
-hist(regions$DENS_2017, probability = TRUE, breaks = breaks, col = "#F0D9F9")
-rug(regions$DENS_2017)
-med <- median(regions$DENS_2017)
-abline(v = med, col = "blue", lwd = 3)
-
-breaks <- getBreaks(v = regions$DENS_2017, nclass = 10, method = "geom")
-hist(regions$DENS_2017, probability = TRUE, breaks = breaks, col = "#F0D9F9")
-rug(regions$DENS_2017)
-
-
-# On separe le plot en 4 pour comparer les cartes
+# On représente ici les cartes pour 4 méthodes de discrétisation présentées plus haut
 par(mfrow=c(2,2))
 
 choroLayer(x = regions, 
@@ -169,7 +169,7 @@ choroLayer(x = regions,
            border = NA,
            add = FALSE,
            legend.pos = "topleft",
-           legend.title.txt = "Population density, 2017",
+           legend.title.txt = "Densité de population (intervalles égaux)",
            legend.values.rnd = 0)
 
 choroLayer(x = regions, 
@@ -180,8 +180,8 @@ choroLayer(x = regions,
            border = NA,
            add = FALSE,
            legend.pos = "topleft",
-           legend.title.txt = "Population density, 2017",
-           legend.values.rnd = 2)
+           legend.title.txt = "Densité de population (progression géométrique)",
+           legend.values.rnd = 0)
 
 choroLayer(x = regions, 
            var = "DENS_2017",
@@ -191,19 +191,19 @@ choroLayer(x = regions,
            border = NA,
            add = FALSE,
            legend.pos = "topleft",
-           legend.title.txt = "Population density, 2017",
-           legend.values.rnd = 2)
+           legend.title.txt = "Densité de population (quantiles)",
+           legend.values.rnd = 0)
 
 choroLayer(x = regions, 
            var = "DENS_2017",
-           method ="sd",
+           method = "sd",
            nclass = 10,
            col = cols,
            border = NA,
            add = FALSE,
            legend.pos = "topleft",
-           legend.title.txt = "Population density, 2017",
-           legend.values.rnd = 2)
+           legend.title.txt = "Densité de population (moyenne/écart-type)",
+           legend.values.rnd = 0)
 
 
 #######################################################
@@ -257,29 +257,29 @@ layoutLayer(title = "Densité de population dans une grille régulière de 100km
 
 
 ##############################
-# A VOUS DE JOUER
+# A VOUS DE JOUER - CREER UNE GRILLE DE 100 KM DE PIB PAR HABITANT
 #############################
 
-# Réaliser une carte du PIB par habitant 2014 sur une grille reguliere de 200 km -
-# La cartographie doit être réalisée avec 6 classes en utilisant une palette verte et rouge discretisee selon la methode des quantiles
-# Solution
+# Retirer les valeurs manquantes
+mygrid100k <- regions
+mygrid100k <- mygrid100k[!is.na(mygrid100k$GDP_2014),]
+mygrid100k <- mygrid100k[!is.na(mygrid100k$POP_2014),]
+
 # Creation de la grille
-mygrid200k <- getGridLayer(x = regions, cellsize = 200000 * 200000, 
-                          type = "regular", var = c("POP_2014","GDP_2014"))
+mygrid100k <- getGridLayer(x = mygrid100k, cellsize = 100000 * 100000, 
+                          type =  "hexagonal", var = c("POP_2014","GDP_2014"))
 
 # Calcul PIB par habitant
-mygrid200k$GDP_HAB <- mygrid200k$GDP_2014 * 1000000 / mygrid200k$POP_2014 
+mygrid100k$GDP_HAB <- mygrid100k$GDP_2014 * 1000000 / mygrid100k$POP_2014
 
-# Une seule carte
-par(mfrow=c(1,1))
 
 # Cartographie
 
-cols <- carto.pal(pal1 = "green.pal", pal2 = "red.pal",  n1 = 3, n2 = 3)  
+cols <- carto.pal(pal1 = "green.pal", pal2 = "red.pal",  n1 = 4, n2 = 4)  
 
-choroLayer(x = mygrid200k, var = "GDP_HAB", 
-           border = "grey80",col = cols, method ="quantile",
-           nclass = 6, legend.pos = "topright", legend.values.rnd = 1,
+choroLayer(x = mygrid100k, var = "GDP_HAB", 
+           border = "grey80",col = cols, method ="quantile" ,
+           nclass = 8, legend.pos = "topright", legend.values.rnd = 1,
            legend.title.txt = "PIB par habitant, 2014")
 
 layoutLayer(title = "PIB par habitant dans une grille régulière de 100km",
