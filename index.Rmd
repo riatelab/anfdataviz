@@ -1108,7 +1108,11 @@ discLayer(x = b, df = countries,
 
 # BONUS
 
-## Utiliser des données OSM
+## Dé-Googliser la carto ! 
+
+[OpenStreetMap (OSM)](https://www.openstreetmap.org){target="_blank"} est un projet de cartographie participatif qui a pour but de constituer une base de données géographiques libre à l'échelle mondiale. OpenStreetMap vous permet de voir, modifier et utiliser des données géographiques dans le Monde entier. En résumé, c'est comme Google Maps, mais en mieux...
+
+<img src="pics/osm.png"></img>
 
 ```{r, eval=T, echo=T}
 library("sf")
@@ -1146,7 +1150,9 @@ plot(st_geometry(cameras), pch=20, col="red", add=T)
 
 ## Généraliser un fond de carte
 
-Bla bla sur la généralisation cartographique
+Toute carte est une reproduction réduite d'une portion de l'espace. Elle suppose donc une simplification des tracés, une réduction de la précision géométrique pour favoriser la lisibilité. C'est ce qu'on appelle la généralisation.
+
+<img src="pics/generalisation.png"></img>
 
 ```{r, eval=T, echo=T}
 library("rmapshaper")
