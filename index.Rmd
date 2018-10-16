@@ -42,7 +42,7 @@ Pour exécuter les programmes proposés par la formation, [installez / mettez à
 
 ## Les packages
 
-Installation des packages utilisés pendant la formation.
+Installation des packages utilisés pendant la formation. Ouvrez R-Studio et tapez :
 
 ```{r eval = FALSE}
 install.packages("sf")
@@ -99,26 +99,28 @@ str
 
 
 
-## Téléchargez les données 
-
-Téléchargez les données sur la page github. Décompressez les données sur votre espace de travail. 
-
-https://github.com/riatelab/anfdataviz/blob/master/data.zip
-
-
 # Exo 1 - Bienvenue à Sète
+
+```{r eval = TRUE, echo =FALSE}
+setwd("exercice1")
+```
+
+## Objectifs
+* Espace d'étude : Hérault, communes
+* Prise en main des fonctions spatiales de R
+
+## Téléchargement des données
+
+Téléchargez les données ici : [Télécharger](https://github.com/riatelab/anfdataviz/blob/master/exercice1.zip){target="_blank"}
+
+Décompressez le dossier et cliquez sur proj.Rproj. Le fichier exo1.R s'ouvre dans R-Studio.
 
 ## Commandes de base
 
-Définissez votre répertoire de travail.
+Vérifiez votre répertoire de travail courant.
 
 ```{r, eval=F}
-setwd("Votre_repertoire_de_travail")
-```
-
-```{r, eval=T, echo=FALSE}
-# setwd("C:/MyCore/ANF2018 - R geoviz")
-setwd("/home/nlambert/ownCloud/ANF2018 - R geoviz")
+getwd()
 ```
 
 Consulter le contenu. Et regarder ce qu'il y a dans le répertoire "data" 
@@ -133,7 +135,7 @@ Import d'une couche SIG dans R avec le package sf. Pacakge basé sur GEOS
 
 ```{r, eval=T}
 library("sf")
-communes <- st_read(dsn = "data/Hérault/communes.shp", stringsAsFactors = F)
+communes <- st_read(dsn = "data/communes.shp", stringsAsFactors = F)
 ```
 
 Voir la table atributaire
@@ -254,19 +256,27 @@ communes$NOM_COMM
 
 # Exo 2 - Cartographier l'Occitanie
 
+```{r eval = TRUE, echo =FALSE}
+setwd("exercice2")
+```
+
 ## Objectifs
 * Thématique : Réaliser une carte des catégories Socio professionnelles.
 * Espace d'étude : Occitanie, communes
 * Visualisation associée : carte en figurés proportionnels (+ cartogrammes de Dorling)
 * packages utilisés : sf, cartography, cartogram, readxl 
 
-Créer un nouveau fichier "Exo2.R".
+## Téléchargement des données
 
-## Chargement et préparation des données
+Téléchargez les données ici : [Télécharger](https://github.com/riatelab/anfdataviz/blob/master/exercice2.zip){target="_blank"}
+
+Décompressez le dossier et cliquez sur proj.Rproj. Le fichier exo2.R s'ouvre dans R-Studio.
+
+## Préparation des données
 Pour bien commencer, il est fondamental de jeter un oeil au fichier d'entrée
 pour comprendre son organisation et savoir comment l'importer sous R. 
 
-Ouvrez le fichier data/France/INSEE/pop-act2554-csp-cd-6814.xls
+Ouvrez le fichier data/INSEE/pop-act2554-csp-cd-6814.xls
 Nous nous intéressons ici à l'onglet "COM_2014".
 
 <img src = "pics/INSEE_Excel.png", alt = "Tableau communal- Population des 25 à
@@ -284,7 +294,7 @@ le tableau de données dans R.
 
 ```{r}
 sheet <- "COM_2014"
-data <- data.frame(read_excel("data/France/INSEE/pop-act2554-csp-cd-6814.xlsx", skip = 15, sheet = sheet)) 
+data <- data.frame(read_excel("data/INSEE/pop-act2554-csp-cd-6814.xlsx", skip = 15, sheet = sheet)) 
 colnames(data)
 data <- data[data$RR == "76",] # Ne prendre que les communes d'Occitanie (code 76)
 View(data) # vOIR Si le fichier a correctement été importé. 
@@ -312,7 +322,7 @@ data$total <- data$agr + data$art + data$sup + data$int + data$emp + data$ouv
 Importez et visualisez le fond de carte (extrait IGN Geofla communes).
 
 ```{r}
-communes <- st_read(dsn = "data/Occitanie/occitanie.shp", stringsAsFactors = F)
+communes <- st_read(dsn = "data/IGN/occitanie.shp", stringsAsFactors = F)
 plot(st_geometry(communes),col="white", border="black", lwd=0.1)
 ```
 
@@ -408,6 +418,10 @@ les différentes valeurs du tableau de données.
 Cartographiez le nombre d'actifs par commune grâce à la fonction *propSymbolsLayer*
 
 ```{r}
+# Ajuster les marges
+par(mar = c(0.5,0.5,1.5,0.5)) 
+
+# Cartographie
 plot(st_geometry(communes), col="lightblue",border="white", lwd=0.2) # Fond de carte de la région Occitanie
 propSymbolsLayer(x = communes, var = "total",  # Carte en figuré proportionnel 
                  symbols = "circle", col =  "red",
@@ -447,6 +461,9 @@ communes[communes$r < 0.91,"typo"] <- "Plus de cadres que d'ouvriers"
 colouv <- "#dd4e44" # tonalité rouge
 colsup <- "#63b269" # tonalité verte
 
+# Ajuster les marges
+par(mar = c(0.5,0.5,1.5,0.5)) 
+
 # Cartographie
 typoLayer(communes, var="typo", 
           legend.values.order = c("Plus d'ouvriers que de cadres", 
@@ -460,6 +477,9 @@ On peut aussi décider d'associer cette représentation à la carte précédente
 en figuré proportionnel grâce à la fonction *propSymbolsTypoLayer* :  
 
 ```{r}
+# Ajuster les marges
+par(mar = c(0.5,0.5,1.5,0.5)) 
+
 # Combiner avec la carte précédente
 plot(st_geometry(communes), col="lightblue",border=NA)
 propSymbolsTypoLayer(x = communes, var = "total", var2 = "typo",
@@ -493,6 +513,9 @@ library("cartogram")
 ```
 
 ```{r}
+# Ajuster les marges
+par(mar = c(0.5,0.5,1.5,0.5)) 
+
 # cartogram de Dorling
 actifs <- cartogram_dorling(communes, "total", k = 1, m_weight = 1, itermax = 20)
 
@@ -511,7 +534,7 @@ title("Ouvriers et cadres en Occitanie, 2014")
 
 ## A vous de jouer ! 
 
-On soite réaliser une carte sur le chômage des ouvriers en Occitanie. Réalisez une 
+On souhaite réaliser une carte sur le chômage des ouvriers en Occitanie. Réalisez une 
 carte avec les parametres suivants :
 
 * Mode de représentation : cartograme de Dorling combinée + typologie. 
@@ -531,6 +554,10 @@ communes[communes$r < 0.2,"typo"] <- "Inférieur à 20 %"
 
 # Exo 3 - Cartographier l'Europe
 
+```{r eval = TRUE, echo =FALSE}
+setwd("exercice3")
+```
+
 ## Objectifs
 * Thématique : Réaliser des cartes de densité de population et de PIB par 
 habitant pour les régions européennes. 
@@ -538,26 +565,30 @@ habitant pour les régions européennes.
 * Visualisation associée : cartes choroplèthes et cartes en grilles
 * packages utilisés : sf, cartography, eurostat, reshape2
 
-Créez un nouveau fichier "Exo3.R".
+## Téléchargement des données
 
-## Chargement et préparation des données
+Téléchargez les données ici : [Télécharger](https://github.com/riatelab/anfdataviz/blob/master/exercice3.zip){target="_blank"}
+
+Décompressez le dossier et cliquez sur proj.Rproj. Le fichier exo3.R s'ouvre dans R-Studio.
+
+## Préparation des données
 
 Chargez les géométries qui seront utilisées pour visualiser vos résultats.
 Il s'agit des géométries de référence des territoires européens adaptés à 
-la cartographie thématique proposés par l'UMS RIATE (ref )
+la cartographie thématique proposés par [l'UMS RIATE](http://riate.cnrs.fr/?page_id=153). 
 
 ```{r, eval=T}
 # Fond de carte principal
-regions <- st_read(dsn = "data/Europe/GREAT/GEOM_EU34_NUTS13/geom_eu34_nuts13.shp", stringsAsFactors = F) 
+regions <- st_read(dsn = "data/GREAT/GEOM_EU34_NUTS13/geom_eu34_nuts13.shp", stringsAsFactors = F) 
 
 # Elements d'habillage
-borders <- st_read("data/Europe/GREAT/OTHERS/borders_EU34.shp", stringsAsFactors = F)
-countries <- st_read("data/Europe/GREAT/OTHERS/background_countries.shp",stringsAsFactors = F)
-coastlines <- st_read("data/Europe/GREAT/OTHERS/coast_wide.shp", stringsAsFactors = F)
-cyprus <- st_read("data/Europe/GREAT/OTHERS/cyprus_north_part.shp", stringsAsFactors = F)
-remote <- st_read("data/Europe/GREAT/OTHERS/remote_territories_wide.shp", stringsAsFactors = F)
-seaboxes <- st_read ("data/Europe/GREAT/OTHERS/remote_area_background_wide.shp",stringsAsFactors = F)
-background <- st_read("data/Europe/GREAT/OTHERS/background.shp", stringsAsFactors = F)
+borders <- st_read("data/GREAT/OTHERS/borders_EU34.shp", stringsAsFactors = F)
+countries <- st_read("data/GREAT/OTHERS/background_countries.shp",stringsAsFactors = F)
+coastlines <- st_read("data/GREAT/OTHERS/coast_wide.shp", stringsAsFactors = F)
+cyprus <- st_read("data/GREAT/OTHERS/cyprus_north_part.shp", stringsAsFactors = F)
+remote <- st_read("data/GREAT/OTHERS/remote_territories_wide.shp", stringsAsFactors = F)
+seaboxes <- st_read ("data/GREAT/OTHERS/remote_area_background_wide.shp",stringsAsFactors = F)
+background <- st_read("data/GREAT/OTHERS/background.shp", stringsAsFactors = F)
 ```
 
 Il est toujours utile de visualiser les géométries utilisées et consulter la table attributaire
@@ -584,22 +615,22 @@ plot(st_geometry(seaboxes), col = NA, border = "#bbbdc0", lwd = 0.15, add = TRUE
 head(regions)
 ```
 
-Ce bloc de code est dédié est à la recolte des données disponibles sur le site d'Eurostat
-grâce au package eurostat. La procédure à suivre pour télécharger ses propres données est 
-la suivante :
+Ce bloc de code est dédié est à la recolte des données mises à disposition par Eurostat.
+Le package *eurostat* permet de les extraire. Le package *reshape2* sert à mettre
+en forme les données. La procédure à suivre est la suivante :
 
 1. Consultez le contenu de la base de données [Eurostat](https://ec.europa.eu/eurostat/fr/data/database){target="_blank"} 
 et identifiez la table qui contient vos indicateurs d'intérêt (cf ci-dessous)
-2. Importez la librairie eurostat.  
-3. Téléchargez la table d'intérêt avec la fonction get_eurostat. C'est un tibble.
-4. Consultez les dimensions du tibble avec la fonction str()
-5. Filtrez les dimensions du tibble afin de réduire sa structure à deux dimensions
+2. Importez les packages *eurostat* et *reshape2*.  
+3. Téléchargez la table d'intérêt avec la *fonction get_eurostat*. C'est un tibble.
+4. Consultez les dimensions du tibble avec la fonction *str*. 
+5. Filtrez les dimensions du tibble pour réduire son contenu à deux dimensions
 (objets géographiques * indicateur par exemple).
-6. Transformez le tibble en dataframe avec la fonction dcast(). Dans notre cas de figure
+6. Transformez le tibble en dataframe avec la fonction *dcast*. Dans notre cas de figure
 nous conservons en ligne les objets géographiques et en colonne la dimension temporelle
 de l'indicateur d'intérêt. 
-7. Quand tous les indicateurs ont été téléchargés et préparés, les joindre à vos géométries de
-référence (regions dans notre cas de figure). 
+7. Quand tous les indicateurs ont été téléchargés et préparés, les joindre aux
+géométries des régions européennes (regions dans notre cas de figure). 
 
 <img src = "pics/ESTAT.png", alt = "Base de données régionale d'Eurostat></img>
 
@@ -631,19 +662,21 @@ fields <- c("geo", "2014", "2015", "2016") # On ne garde que les valeurs de PIB 
 gdp <- gdp[,fields]
 colnames(gdp) <- c("geo","GDP_2014","GDP_2015","GDP_2016")
 
-# Jointure
+# Jointure avec les géométries
 regions <- merge(x = regions, y = data, by.x = "id", by.y = "geo", all.x=T) # population
 regions <- merge(x = regions, y = area, by.x = "id", by.y = "geo", all.x=T) # surface
 regions <- merge(x = regions, y = gdp, by.x = "id", by.y = "geo", all.x=T) # surface
+
+# Export du fichier contenant géométries et données
+write_sf(obj = regions, dsn = "data/regions_data.shp")
 ```
 
-Importez le jeu de données créé suite à cette procédure, associé aux géométries européennes de réference. 
+Importez le jeu de données créé suite à cette étape de collecte de données,
+qui est maintenant associé aux géométries européennes de réference. 
 
 ```{r, eval=T}
-regions <- st_read("data/Europe/regions_data.shp", stringsAsFactors = F)
+regions <- st_read("data/regions_data.shp", stringsAsFactors = F)
 ```
-
-Les données sont prêtes pour la visualisation !
 
 Pour choisir l'année de référence sur laquelle portera la visualisation, regardez
 le nombre de valeurs manquantes...
@@ -657,6 +690,8 @@ apply(regions,2,function(x) sum(is.na(x)))
 ```{r, eval=T}
 regions$DENS_2017 <- regions$POP_2017 / regions$AREA
 ```
+
+Tout est prêt pour la visualisation !
 
 ## Visualisation : cartes choroplèthes
 
@@ -732,9 +767,13 @@ de cartography.
 
 ```{r, eval=T}
 
-# Ajuster les marges et les paramètes de visu
-par(mar = c(0.5,0.5,1.5,0.5)) 
-par(mfrow=c(1,1))
+# Mise en page
+par(mar = c(0.5,0.5,1.5,0.5)) # Ajuster les marges
+par(mfrow=c(2,2)) # 2 cartes par ligne et par colonne
+
+#----------------------
+# Carte 1 - quantiles
+#----------------------
 
 # Mise en page (back)
 plot(st_geometry(background), col = "#e0ecff", border = NA, add =FALSE)
@@ -749,8 +788,8 @@ choroLayer(x = regions,
            col = cols,
            border = NA,
            add = TRUE,
-           legend.pos = "topleft",
-           legend.title.txt = "Densité de population, 2017 (hab/km²)",
+           legend.pos = "topright",
+           legend.title.txt = "Densité de population \n 2017 (hab/km²)",
            legend.values.rnd = 0)
 
 # Mise en page (top)
@@ -761,20 +800,123 @@ plot (st_geometry(coastlines), col = "#d2dbef", lwd = 0.15, add = TRUE)
 plot(st_geometry(seaboxes), col = NA, border = "#bbbdc0", lwd = 0.15, add = TRUE)
 
 # Sources + elements d'habillage
-layoutLayer(title = "Densité de population dans les NUTS3 européens, 2017",
-            author = "Réalisation : Serial Mappers, 2018", sources = "Source, Eurostat, 2018",
-            scale = 200, tabtitle = TRUE,
+layoutLayer(title = "Densité de population - Méthode des quantiles",
+            author = "Serial Mappers, 2018", sources = "Eurostat, 2018",
+            scale = 200, tabtitle = FALSE,
+            frame = FALSE,theme = "red.pal",
+            south = TRUE)
+
+
+#-------------------------------
+# Carte 2 - intervalles égaux
+#-------------------------------
+    
+# Mise en page (back)
+plot(st_geometry(background), col = "#e0ecff", border = NA, add =FALSE)
+plot(st_geometry(countries), col = "#c6c4c4", border = NA, add =TRUE)
+plot(st_geometry(seaboxes), col = "#f7fcfe", border = NA, add = TRUE)
+
+# Cartographie (ratio)
+choroLayer(x = regions, 
+           var = "DENS_2017",
+           method ="equal",
+           nclass = 10,
+           col = cols,
+           border = NA,
+           add = TRUE,
+           legend.pos = "topright",
+           legend.title.txt = "Densité de population \n 2017 (hab/km²)",
+           legend.values.rnd = 0)
+
+# Mise en page (top)
+plot (st_geometry(remote), col = "#e6e6e6", border =NA, add=TRUE)
+plot (st_geometry(borders), col = "#f7fcfe",lwd = 0.5, add = TRUE) 
+plot (st_geometry(cyprus), col = "#f7fcfe", border = NA, add = TRUE)
+plot (st_geometry(coastlines), col = "#d2dbef", lwd = 0.15, add = TRUE)
+plot(st_geometry(seaboxes), col = NA, border = "#bbbdc0", lwd = 0.15, add = TRUE)
+
+# Sources + elements d'habillage
+layoutLayer(title = "Densité de population - Méthode des intervalles égaux",
+            author = "Serial Mappers, 2018", sources = "Eurostat, 2018",
+            scale = 200, tabtitle = FALSE,
+            frame = FALSE,theme = "red.pal",
+            south = TRUE)
+
+#--------------------------------
+# Carte 3 - Moyenne écart-type
+#--------------------------------
+  
+# Mise en page (back)
+plot(st_geometry(background), col = "#e0ecff", border = NA, add =FALSE)
+plot(st_geometry(countries), col = "#c6c4c4", border = NA, add =TRUE)
+plot(st_geometry(seaboxes), col = "#f7fcfe", border = NA, add = TRUE)
+
+# Récupérer les seuils
+breaks <- getBreaks(v = regions$DENS_2017, k = 1.8, method = "msd", middle = FALSE)
+
+# Cartographie (ratio)
+choroLayer(x = regions, 
+           var = "DENS_2017",
+           breaks = breaks,
+           nclass = 10,
+           col = cols,
+           border = NA,
+           add = TRUE,
+           legend.pos = "topright",
+           legend.title.txt = "Densité de population \n 2017 (hab/km²)",
+           legend.values.rnd = 0)
+
+# Mise en page (top)
+plot (st_geometry(remote), col = "#e6e6e6", border =NA, add=TRUE)
+plot (st_geometry(borders), col = "#f7fcfe",lwd = 0.5, add = TRUE) 
+plot (st_geometry(cyprus), col = "#f7fcfe", border = NA, add = TRUE)
+plot (st_geometry(coastlines), col = "#d2dbef", lwd = 0.15, add = TRUE)
+plot(st_geometry(seaboxes), col = NA, border = "#bbbdc0", lwd = 0.15, add = TRUE)
+
+# Sources + elements d'habillage
+layoutLayer(title = "Densité de population - Méthode Moyenne / écart-type",
+            author = "Serial Mappers, 2018", sources = "Eurostat, 2018",
+            scale = 200, tabtitle = FALSE,
+            frame = FALSE,theme = "red.pal",
+            south = TRUE)
+
+
+#--------------------------------------
+# Carte 4 - Progression géométrique
+#--------------------------------------  
+  
+# Mise en page (back)
+plot(st_geometry(background), col = "#e0ecff", border = NA, add =FALSE)
+plot(st_geometry(countries), col = "#c6c4c4", border = NA, add =TRUE)
+plot(st_geometry(seaboxes), col = "#f7fcfe", border = NA, add = TRUE)
+
+# Cartographie (ratio)
+choroLayer(x = regions, 
+           var = "DENS_2017",
+           method ="geom",
+           nclass = 10,
+           col = cols,
+           border = NA,
+           add = TRUE,
+           legend.pos = "topright",
+           legend.title.txt = "Densité de population \n 2017 (hab/km²)",
+           legend.values.rnd = 0)
+
+# Mise en page (top)
+plot (st_geometry(remote), col = "#e6e6e6", border =NA, add=TRUE)
+plot (st_geometry(borders), col = "#f7fcfe",lwd = 0.5, add = TRUE) 
+plot (st_geometry(cyprus), col = "#f7fcfe", border = NA, add = TRUE)
+plot (st_geometry(coastlines), col = "#d2dbef", lwd = 0.15, add = TRUE)
+plot(st_geometry(seaboxes), col = NA, border = "#bbbdc0", lwd = 0.15, add = TRUE)
+
+# Sources + elements d'habillage
+layoutLayer(title = "Densité de population - Méthode progression géométrique",
+            author = "Serial Mappers, 2018", sources = "Eurostat, 2018",
+            scale = 200, tabtitle = FALSE,
             frame = FALSE,theme = "red.pal",
             south = TRUE)
 ```
 
-## A vous de jouer !
-
-Reproduisez cette carte avec les paramètres suivants :
-
-* Discrétisation : progression géométrique
-* Nombre de classes : 8
-* Palette de couleurs : Bleue
 
 
 ## Visualisation : cartes carroyées
@@ -850,38 +992,43 @@ layoutLayer(title = "Densité de population dans une grille régulière de 100km
 
 ## A vous de jouer !
 
-Créez une nouvelle carte carroyée avec les paramètres suivants :
+Créez en vis à vis une carte choroplèthe et une carte carroyée avec les paramètres suivants :
 
+Pour les deux cartes:
 * Indicateur : PIB / habitant 2014
-* Résolution de grille : 100 km
-* Type de grille : hexagones (nb : il faut charger la librairie sp au préalable)
 * Discrétisation : quantiles (8 classes)
-* Palette de couleurs : Double palette (vert/rouge)
+* Palette de couleurs : Double palette (green.pal/red.pal)
+
+Pour la carte carroyée
+* Résolution de la carte carroyée : 100 km
+* Type de grille : hexagones
 
 Exécutez ce code qui permet au prélable de préparer la grille et retirer les valeurs
 manquantes qui nuiraient au calcul.
 
 ```{r, eval=T}
-library(sp)
-
 # Retirer les valeurs manquantes
-mygrid100k <- regions
-mygrid100k <- mygrid100k[!is.na(mygrid100k$GDP_2014),]
-mygrid100k <- mygrid100k[!is.na(mygrid100k$POP_2014),]
+regions <- regions[!is.na(regions$GDP_2014),]
+regions <- regions[!is.na(regions$POP_2014),]
 
 # Creation de la grille
-mygrid100k <- getGridLayer(x = mygrid100k, cellsize = 100000 * 100000, 
+mygrid100k <- getGridLayer(x = regions, cellsize = 100000 * 100000, 
                           type =  "hexagonal", var = c("POP_2014","GDP_2014"))
 
 # Calcul PIB par habitant
 mygrid100k$GDP_HAB <- mygrid100k$GDP_2014 * 1000000 / mygrid100k$POP_2014
+regions$GDP_HAB <- regions$GDP_2014 * 1000000 / regions$POP_2014
 ```
 
 
 
 # Exo 4 - Cartographier le Monde
 
-## Objectifs :
+```{r eval = TRUE, echo =FALSE}
+setwd("exercice4")
+```
+
+## Objectifs
 * Thématique : Les inégalités d'IDH et/ou d'espérance de vie
 * Espace d'étude : Le Monde, pays.
 * Visualisation associée : carte chorplèthe, discontinuités
@@ -889,13 +1036,22 @@ mygrid100k$GDP_HAB <- mygrid100k$GDP_2014 * 1000000 / mygrid100k$POP_2014
 
 <img src="pics/discontinuités.png"></img>
 
-## Import du fond de carte
+
+## Téléchargement des données
+
+Téléchargez les doonnées ici : [Télécharger](https://github.com/riatelab/anfdataviz/blob/master/exercice4.zip){target="_blank"}
+
+Décompressez le dossier et cliquez sur proj.Rproj. Le fichier exo4.R s'ouvre dans R-Studio.
+
+## Préparation des données
+
+### Import du fond de carte
 
 méthode 1 : à la main (après téléchargement sur le site Natural Earth)
 
 ```{r, eval=F, echo=T}
 library("sf")
-countries <- st_read(dsn = "data/world/naturalearth/ne_110m_admin_0_countries.shp", stringsAsFactors = F)  
+countries <- st_read(dsn = "data/naturalearth/ne_110m_admin_0_countries.shp", stringsAsFactors = F)  
 ```
 
 Méthode 2 : directement via R
@@ -946,13 +1102,13 @@ countries <- countries[!is.na(countries$id),]
 plot(st_geometry(countries))
 ```
 
-## Import des données atributaires
+### Import des données atributaires
 
 Import des données sur l'éspérance de vie (source : Banque mondiale)
 
 ```{r, eval=T, echo=T}
 library("readxl")
-file <-"data/world/worldbank/API_SP.DYN.LE00.IN_DS2_en_excel_v2_10081535.xls"
+file <-"data/worldbank/API_SP.DYN.LE00.IN_DS2_en_excel_v2_10081535.xls"
 sheet <- "Data"
 lifexp <- data.frame(read_excel(file, skip = 3, sheet = sheet))
 lifexp <- lifexp[,c("Country.Code","Country.Name","X2016")]
@@ -963,7 +1119,7 @@ lifexp$lifexp2016 <- as.numeric(as.character(lifexp$lifexp2016))
 Import des données sur l'Indice de deveoppement humain (source : Human Development Report)
 
 ```{r, eval=T, echo=T}
-file <-"data/world/hdr/Human Development Index (HDI).csv"
+file <-"data/hdr/Human Development Index (HDI).csv"
 hdi <- read.csv2(file = file, sep = ",",skip = 1)
 hdi <- hdi[,c("Country","X2016")]
 ```
@@ -988,7 +1144,7 @@ hdi$hdi2016 <- as.numeric(as.character(hdi$hdi2016))
 head(hdi,4)
 ```
 
-## Cartographie
+## Visualisation : carte choroplèthe
 
 Chargement du package
 
@@ -1108,6 +1264,21 @@ discLayer(x = b, df = countries,
 
 # BONUS
 
+```{r eval = TRUE, echo =FALSE}
+setwd("bonus")
+```
+
+## Objectifs
+
+* Utiliser des données Open Street Map
+* Généraliser un fond de carte
+
+## Téléchargement des données
+
+Téléchargez les doonnées ici : [Télécharger](https://github.com/riatelab/anfdataviz/blob/master/bonus.zip){target="_blank"}
+
+Décompressez le dossier et cliquez sur proj.Rproj. Le fichier bonus.R s'ouvre dans R-Studio.
+
 ## Dé-Googliser la carto ! 
 
 [OpenStreetMap (OSM)](https://www.openstreetmap.org){target="_blank"} est un projet de cartographie participatif qui a pour but de constituer une base de données géographiques libre à l'échelle mondiale. OpenStreetMap vous permet de voir, modifier et utiliser des données géographiques dans le Monde entier. En résumé, c'est comme Google Maps, mais en mieux...
@@ -1118,7 +1289,7 @@ discLayer(x = b, df = countries,
 library("sf")
 library("cartography")
 
-depts <- st_read(dsn = "data/France/IGN/DEPARTEMENT.shp", stringsAsFactors = F)
+depts <- st_read(dsn = "data/IGN/DEPARTEMENT.shp", stringsAsFactors = F)
 colnames(depts)
 Paris <- depts[depts$CODE_DEPT == 75,]
 plot(st_geometry(Paris))
@@ -1161,7 +1332,7 @@ library("rmapshaper")
 Import et affichage d'un fond de carte
 
 ```{r, eval=T, echo=T}
-countries <- st_read(dsn = "data/world/naturalearth/ne_110m_admin_0_countries.shp", stringsAsFactors = F)
+countries <- st_read(dsn = "data/naturalearth/ne_110m_admin_0_countries.shp", stringsAsFactors = F)
 plot(st_geometry(countries), col="green")
 ```
 
