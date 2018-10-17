@@ -32,6 +32,14 @@ le Monde.
 
 </h3>
 
+# Pourquoi faire de la cartographie avec R ?
+
+*"La science est infaillible, mais les savants se trompent toujours."* (Anatole France, 1889). Ce principe peut également être appliqué à la cartographie. En effet, toute carte est issue d'un processus complexe de choix, de selections, d'opérations statistiques ou géomatiques. Certains auteurs énoncent que les cartes sont subjectives. D'autres auteurs disent carrément que les cartes mentent. Quoi qu'il en soit, toute carte résulte de l'acte créateur des des choix de son auteur. Donc quand on se situe dans une démarche scientifique, ces choix doivent être traçables, partageables et soumis à la discussion scientifique (ce qui est difficilement faisable quand ces cartes sont réalisées dans un environnement "clic-bouton"). 
+
+La réalisation des cartes dans le langage R permet donc de tracer toutes les opérations de la réalisation cartographique. Réaliser des cartes dans ce langage unique permet, en diffusant le code source en même temps que les cartes, de jouer "carte sur table". Cela permet de détailler les choix qui ont été faits, et de s'exposer à la controverse scientifique.  Cela permet aussi de travailler à plusieur sur une carte en associant des compétances complémentaires (sémiologie graphique, statistiques, géomatique, etc.) et de faciliter la mise à jour de documents déjà rélisés (en rééxecutant un code préalablement réalisé).
+
+Au final, l’utilisation de R nécessite un effort non négligeable pour ceux qui ne sont pas habitués à l’univers de la programmation informatique. Mais définitivement, l’investissement n'a que des avantages.
+
 # Packages & données
 
 ## Environnement de travail
@@ -47,12 +55,9 @@ Installation des packages utilisés pendant la formation. Ouvrez R-Studio et tap
 ```{r eval = FALSE}
 install.packages("sf")
 install.packages("cartography")
-install.packages("countrycode")
-install.packages("readxl")
-install.packages("rnaturalearth")
 install.packages("cartogram")
-install.packages("reshape2")
-install.packages("eurostat")
+install.packages("readxl")
+install.packages("countrycode")
 ```
 
 Optionnel
@@ -60,6 +65,9 @@ Optionnel
 ```{r eval = FALSE}
 install.packages("rmapshaper")
 install.packages("osmdata")
+install.packages("reshape2")
+install.packages("eurostat")
+install.packages("rnaturalearth")
 ```
 
 Version des packages utilisés dans ce document
@@ -101,10 +109,6 @@ str
 
 # Exo 1 - Bienvenue à Sète
 
-```{r eval = TRUE, echo =FALSE}
-setwd("exercice1")
-```
-
 ## Objectifs
 * Espace d'étude : Hérault, communes
 * Prise en main des fonctions spatiales de R
@@ -125,7 +129,7 @@ getwd()
 
 Consulter le contenu. Et regarder ce qu'il y a dans le répertoire "data" 
 
-```{r, eval=T}
+```{r, eval=F}
 list.files()
 list.files("data")
 ```
@@ -142,7 +146,7 @@ Voir la table atributaire
 
 ```{r, eval=T}
 communes
-head(communes)
+head(communes,3)
 View(communes)
 ```
 
@@ -159,6 +163,12 @@ plot(st_geometry(communes), col="#aec8f2", border="darkblue", lwd=1)
 ```
 
 
+Ajuster les marges
+```{r, eval=T}
+par(mar = c(0.5,0.5,1.5,0.5)) 
+plot(st_geometry(communes), col="#aec8f2", border="darkblue", lwd=1)
+```
+
 ## Introduction au SIG avec R / Manipuler les informations spatiales
 
 Nous cherchons à identifier les communes qui ont une partie de leur territoire 
@@ -170,6 +180,7 @@ Nous commençons par extraire la commune de Sète.
 ```{r, eval=T}
 macommune <- "SETE"
 monpoly <- communes[communes$NOM_COMM == macommune,]
+par(mar = c(0.5,0.5,1.5,0.5)) 
 plot(st_geometry(communes), col="#aec8f2", border="darkblue", lwd=1)
 plot(st_geometry(monpoly), col="red", border="purple", lwd=1, add=T)
 ```
@@ -178,6 +189,7 @@ Extraitre le centroide de la commune de Sete.
 
 ```{r, eval=T}
 moncentre <- st_centroid(x = monpoly)
+par(mar = c(0.5,0.5,1.5,0.5)) 
 plot(st_geometry(communes), col="#aec8f2", border="darkblue", lwd=1)
 plot(st_geometry(monpoly), col="red", border="purple", lwd=1, add=T)
 plot(st_geometry(moncentre), pch=20, col="black", cex=2, add=T)
@@ -188,8 +200,8 @@ Calculer une zone tampon
 
 ```{r, eval=T}
 mydist <- 20000
-
 buff <- st_buffer(x = st_geometry(moncentre), dist=mydist)
+par(mar = c(0.5,0.5,1.5,0.5)) 
 plot(st_geometry(communes), col="#aec8f2", border="darkblue", lwd=1)
 plot(st_geometry(monpoly), col="red", border="purple", lwd=1, add=T)
 plot(st_geometry(moncentre), pch=20, col="black", cex=2, add=T)
@@ -214,6 +226,7 @@ Extraction et affichage des communes
 
 ```{r, eval=T}
 communes20km <- communes[communes$buff == TRUE,]
+par(mar = c(0.5,0.5,1.5,0.5)) 
 plot(st_geometry(communes), col="#aec8f2", border="darkblue", lwd=1)
 plot(st_geometry(monpoly), col="red", border="purple", lwd=1, add=T)
 plot(st_geometry(moncentre), pch=20, col="black", cex=2, add=T)
@@ -222,14 +235,14 @@ plot(st_geometry(communes20km), col=NA, lwd=2, border="red", add=T)
 ```
 
 
-Ajout d'un titre
+Nouvelle carte avec un titre
+(NB : La première couche affichée détermine l'emprise de la carte)
 
 ```{r, eval=T}
-plot(st_geometry(communes), col="#aec8f2", border="darkblue", lwd=1)
+par(mar = c(0.5,0.5,1.5,0.5)) 
+plot(st_geometry(communes20km), col="#aec8f2", border="darkblue", lwd=1)
 plot(st_geometry(monpoly), col="red", border="purple", lwd=1, add=T)
-plot(st_geometry(moncentre), pch=20, col="black", cex=2, add=T)
 plot(buff, col=NA, border="black", lty=2,add=T)
-plot(st_geometry(communes20km), col=NA, lwd=2, border="red", add=T)
 montitre <- paste0("Il y a ", nb[1], " communes situées à moins de ", mydist/1000, "km de ",tolower(macommune))
 title(montitre)
 ```
@@ -255,10 +268,6 @@ communes$NOM_COMM
 
 
 # Exo 2 - Cartographier l'Occitanie
-
-```{r eval = TRUE, echo =FALSE}
-setwd("exercice2")
-```
 
 ## Objectifs
 * Thématique : Réaliser une carte des catégories Socio professionnelles.
@@ -500,10 +509,10 @@ title("Cadres et ouvriers en région Occitanie")
 
 
 
-## Visualisation : cartogramme de Dorling
+## Une astuce cartographique : le "cartogramme" de Dorling
 
-A cette échelle géographique on remarque que les cercles se surimposent les uns
-aux autres. Cela ne nuit pas à la lisibilité générale de la carte mais on peut
+A cette échelle géographique on remarque que les cercles se superposent les uns
+sur aux autres. Cela ne nuit pas à la lisibilité générale de la carte mais on peut
 aussi décider d'utiliser un package et une fonction qui permet d'éviter cela. 
 
 Pour ce faire, lancez la librairie *cartogram* et la fonction *cartogram_dorling*. 
@@ -534,29 +543,19 @@ title("Ouvriers et cadres en Occitanie, 2014")
 
 ## A vous de jouer ! 
 
-On souhaite réaliser une carte sur le chômage des ouvriers en Occitanie. Réalisez une 
-carte avec les parametres suivants :
+On souhaite réaliser une carte avec une autre catégorie socio-professionnelle : les agriculteurs (ou une autre CSP de votre choix). 
+Pourquoi ne pourquoi choisir des carrés plutôt que des cercles ? 
 
-* Mode de représentation : cartograme de Dorling combinée + typologie. 
-* Typologie : 2 catégories (communes ou le taux de chômage des ouvriers est supérieur/inférieur à 20 %)
-* Cercles proportionnels : population ouvrière (actifs + chomeurs)
-* Nommer les communes où plus de 500 ouvriers sont au chômage
+Voici le code à compléter pour réaliser la carte : 
 
-Voici le code à exécuter pour calculer cette typologie (même démarche que plus haut)
-```{r}
-communes$typo <- "Indéterminé"
-communes$r <- communes$ouv_chom / communes$ouv
-communes$r[is.na(communes$r)] <- 0
-communes[communes$r >= 0.2,"typo"] <- "Supérieur à 20 %"
-communes[communes$r < 0.2,"typo"] <- "Inférieur à 20 %"
+```{r, eval=F}
+plot(st_geometry(communes), col="",border="", lwd="")
+
+propSymbolsLayer(...)
 ```
 
 
 # Exo 3 - Cartographier l'Europe
-
-```{r eval = TRUE, echo =FALSE}
-setwd("exercice3")
-```
 
 ## Objectifs
 * Thématique : Réaliser des cartes de densité de population et de PIB par 
@@ -578,61 +577,31 @@ Il s'agit des géométries de référence des territoires européens adaptés à
 la cartographie thématique proposés par [l'UMS RIATE](http://riate.cnrs.fr/?page_id=153). 
 
 ```{r, eval=T}
+# Charger la librairie sf
+library(sf)
+
 # Fond de carte principal
-regions <- st_read(dsn = "data/GREAT/GEOM_EU34_NUTS13/geom_eu34_nuts13.shp", stringsAsFactors = F) 
+regions <- st_read(dsn = "data/GREAT/nuts2013-level3.shp", stringsAsFactors = F) 
 
-# Elements d'habillage
-borders <- st_read("data/GREAT/OTHERS/borders_EU34.shp", stringsAsFactors = F)
-countries <- st_read("data/GREAT/OTHERS/background_countries.shp",stringsAsFactors = F)
-coastlines <- st_read("data/GREAT/OTHERS/coast_wide.shp", stringsAsFactors = F)
-cyprus <- st_read("data/GREAT/OTHERS/cyprus_north_part.shp", stringsAsFactors = F)
-remote <- st_read("data/GREAT/OTHERS/remote_territories_wide.shp", stringsAsFactors = F)
-seaboxes <- st_read ("data/GREAT/OTHERS/remote_area_background_wide.shp",stringsAsFactors = F)
-background <- st_read("data/GREAT/OTHERS/background.shp", stringsAsFactors = F)
+# Couche d'habillage
+countries <- st_read("data/GREAT/world.shp",stringsAsFactors = F)
 ```
 
-Il est toujours utile de visualiser les géométries utilisées et consulter la table attributaire
-avant de lancer les traitements...
 
-```{r, eval=T}
-# Ajuster les marges
-par(mar = c(0.5,0.5,1.5,0.5)) 
-# Visualisation des couches géographiques
-plot(st_geometry(background), col = "#e0ecff", border = NA, add =FALSE)
-plot(st_geometry(countries), col = "#e6e6e6", border = NA, add =TRUE)
-plot(st_geometry(seaboxes), col = "#f7fcfe", border = NA, add = TRUE)
-plot(st_geometry(regions),  col = "#7ccdea", border = "#f7fcfe", lwd = 0.15, add=T) # Les representations cartographiques porteront sur cette couche 
-plot (st_geometry(remote), col = "#e6e6e6", border =NA, add=TRUE)
-plot (st_geometry(borders), col = "#f7fcfe",lwd = 0.5, add = TRUE) 
-plot (st_geometry(cyprus), col = "#f7fcfe", border = NA, add = TRUE)
-plot (st_geometry(coastlines), col = "#d2dbef", lwd = 0.15, add = TRUE)
-plot(st_geometry(seaboxes), col = NA, border = "#bbbdc0", lwd = 0.15, add = TRUE)
+Astuce ! Le package *eurostat* permet d'accéder aux données de statistiques
+européennes directement dans l'environnement de R sans avoir besoin 
+d'aller chercher sur le site Web et de les télécharger. Cela permet 
+d'avoir des données à jour et d'éviter toute erreur de manipulation de 
+données. 
 
-```
+Le code ci-dessous (**à ne pas exécuter**) est un exemple de procédure 
+d'extraction de données (population, surface, PIB). 
 
-```{r, eval=T}
-# Table attributaire de la couche cible pour les traitements cartographiques
-head(regions)
-```
 
 Ce bloc de code est dédié est à la recolte des données mises à disposition par Eurostat.
 Le package *eurostat* permet de les extraire. Le package *reshape2* sert à mettre
 en forme les données. La procédure à suivre est la suivante :
 
-1. Consultez le contenu de la base de données [Eurostat](https://ec.europa.eu/eurostat/fr/data/database){target="_blank"} 
-et identifiez la table qui contient vos indicateurs d'intérêt (cf ci-dessous)
-2. Importez les packages *eurostat* et *reshape2*.  
-3. Téléchargez la table d'intérêt avec la *fonction get_eurostat*. C'est un tibble.
-4. Consultez les dimensions du tibble avec la fonction *str*. 
-5. Filtrez les dimensions du tibble pour réduire son contenu à deux dimensions
-(objets géographiques * indicateur par exemple).
-6. Transformez le tibble en dataframe avec la fonction *dcast*. Dans notre cas de figure
-nous conservons en ligne les objets géographiques et en colonne la dimension temporelle
-de l'indicateur d'intérêt. 
-7. Quand tous les indicateurs ont été téléchargés et préparés, les joindre aux
-géométries des régions européennes (regions dans notre cas de figure). 
-
-<img src = "pics/ESTAT.png", alt = "Base de données régionale d'Eurostat></img>
 
 ```{r, eval=F}
 library("eurostat")
@@ -676,6 +645,8 @@ qui est maintenant associé aux géométries européennes de réference.
 
 ```{r, eval=T}
 regions <- st_read("data/regions_data.shp", stringsAsFactors = F)
+plot(st_geometry(regions))
+head(regions)
 ```
 
 Pour choisir l'année de référence sur laquelle portera la visualisation, regardez
@@ -709,47 +680,46 @@ de la distribution mais aussi des objectifs cartographiques que l'on s'est fixé
 
 <img src = "pics/formes_distribution.png"></img>
 
-Dans cartography, plusieurs méthodes de discrétisation sont proposées. Jetez un
-oeil à la documentation de la fonction getBreaks pour en savoir plus. 
 
-On peut maintenant observer avec un graphique simple les effets de plusieurs
-méthodes de discrétisation sur notre variable de densité de population. 
-
-Compte-tenu du nombre d'unités territoriales NUTS3 en Europe, nous choisissons
-10 classes pour guider la discrétisation. 
+### Étape 1 : Déterminer la forme de la distribution
+Quelle est la forme de la distribution de la variable de densité de population
+2017 ?
 
 ```{r, eval=T}
-library(cartography)
+var <- regions$DENS_2017
 
-# 4 graphiques par plot
-par(mfrow=c(2,2))
+hist(var, probability = TRUE, nclass = 30)
+rug(var)
+moy <- mean(var)
+med <- median(var)
+abline(v = moy, na.rm = T, col = "red", lwd = 3)
+abline(v = med, na.rm = T, col = "blue", lwd = 3)
 
-# Methode discretisation (quantiles)
-breaks <- getBreaks(v = regions$DENS_2017, nclass = 10, method = "quantile")
-hist(regions$DENS_2017, probability = TRUE, breaks = breaks, col = "#F0D9F9", xlim = c(0,4000), main = "Quantiles")
-abline(v = median(regions$DENS_2017, na.rm = T), col = "blue", lwd = 3)
-abline(v = mean(regions$DENS_2017, na.rm = T), col = "red", lwd = 3)
-
-# Methode discretisation (intervalles égaux)
-breaks <- getBreaks(v = regions$DENS_2017, nclass = 10, method = "equal")
-hist(regions$DENS_2017, probability = TRUE, breaks = breaks, col = "#F0D9F9", xlim = c(0,4000), main = "Intervalles égaux")
-abline(v = median(regions$DENS_2017, na.rm = T), col = "blue", lwd = 3)
-abline(v = mean(regions$DENS_2017, na.rm = T), col = "red", lwd = 3)
-
-# Methode discretisation (moyenne-écart type)
-breaks <- getBreaks(v = regions$DENS_2017, nclass = 10, method = "msd", k=1, middle = TRUE)
-hist(regions$DENS_2017, probability = TRUE, breaks = breaks, col = "#F0D9F9", xlim = c(0,4000), main = "Moyenne/écart-type")
-med <- median(regions$DENS_2017, na.rm = T)
-abline(v = median(regions$DENS_2017, na.rm = T), col = "blue", lwd = 3)
-abline(v = mean(regions$DENS_2017, na.rm = T), col = "red", lwd = 3)
-
-# Methode discretisation (geom)
-breaks <- getBreaks(v = regions$DENS_2017, nclass = 10, method = "geom")
-hist(regions$DENS_2017, probability = TRUE, breaks = breaks, col = "#F0D9F9", xlim = c(0,4000), main = "Progression géométrique")
-abline(v = median(regions$DENS_2017, na.rm = T), col = "blue", lwd = 3)
-abline(v = mean(regions$DENS_2017, na.rm = T), col = "red", lwd = 3)
+summary(regions$DENS_2017)
 ```
 
+On constate qu'il y a beaucoup de régions à faible densité et très peu
+de région à forte densité; la série est donc fortement dyssimétrique à gauche.
+
+On choisit donc la méthode des quantiles. 
+
+*NB / Dans cartography, plusieurs méthodes de discrétisation sont proposées. Jetez un
+oeil à la documentation de la fonction getBreaks pour en savoir plus.* 
+
+
+### Étape 2 : Combien de classes ? 
+
+Le nombre de classes dépend du nombre d'unités spatiales prises en compte 
+(plus il y a d'unités spatiales plus on peut faire de classes) et dépend
+des capacités de perception de l'oeil humain (distinguer 10 nuances de
+couleur est un maximum). 
+
+On souhaite mettre en évidence les 10 % des valeurs les plus élevées (régions
+métropolitaines) et les 10 % des valeurs les plus faibles. Autrement dit, 
+on choisit **10 classes** pour découper notre série statistique (déciles). 
+
+
+### Étape 3 : Quelles couleurs ? 
 Explorez la documentation de la fonction carto.pal de cartography pour choisir votre palette.
 Utilisez l'instruction display.carto.all pour visualiser les palettes disponibles. 
 Nous choisissons ici la palette "red.pal"
@@ -760,25 +730,41 @@ display.carto.all(10)
 cols <- carto.pal(pal1 = "red.pal", n1 = 10)
 ```
 
-Tout est prêt ! Cartographions cet indicateur avec la méthode des quantiles,
-la palette "red" en 10 classes. Associons des couches d'habillage. Et mettons en 
-page la carte (flèche du nord, échelle, sources) grâce à l'instruction layoutLayer
-de cartography. 
+Tout est défini pour lancer la cartographie ! 
+
+
+### Visualisation de la discrétisation choisie
+
+```{r, eval=T}
+library(cartography)
+
+par(mfrow=c(1,1))
+
+# Methode discretisation (quantiles)
+breaks <- getBreaks(v = regions$DENS_2017, nclass = 10, method = "quantile")
+hist(regions$DENS_2017, probability = TRUE, xlim = c(0,3000), breaks = breaks, col = cols,
+     main = "Quantiles")
+abline(v = median(regions$DENS_2017, na.rm = T), col = "blue", lwd = 3)
+
+```
+
+
+### Cartographie
+
+On utilise la projection officielle pour l'Union Européenne
+
+```{r, eval=T}
+countries <- st_transform(countries,3035)
+regions <- st_transform(regions,3035)
+```
 
 ```{r, eval=T}
 
 # Mise en page
 par(mar = c(0.5,0.5,1.5,0.5)) # Ajuster les marges
-par(mfrow=c(2,2)) # 2 cartes par ligne et par colonne
 
-#----------------------
-# Carte 1 - quantiles
-#----------------------
-
-# Mise en page (back)
-plot(st_geometry(background), col = "#e0ecff", border = NA, add =FALSE)
+plot(st_geometry(regions), col = NA, border = NA)
 plot(st_geometry(countries), col = "#c6c4c4", border = NA, add =TRUE)
-plot(st_geometry(seaboxes), col = "#f7fcfe", border = NA, add = TRUE)
 
 # Cartographie (ratio)
 choroLayer(x = regions, 
@@ -788,16 +774,48 @@ choroLayer(x = regions,
            col = cols,
            border = NA,
            add = TRUE,
-           legend.pos = "topright",
+           legend.pos = "left",
            legend.title.txt = "Densité de population \n 2017 (hab/km²)",
            legend.values.rnd = 0)
 
-# Mise en page (top)
-plot (st_geometry(remote), col = "#e6e6e6", border =NA, add=TRUE)
-plot (st_geometry(borders), col = "#f7fcfe",lwd = 0.5, add = TRUE) 
-plot (st_geometry(cyprus), col = "#f7fcfe", border = NA, add = TRUE)
-plot (st_geometry(coastlines), col = "#d2dbef", lwd = 0.15, add = TRUE)
-plot(st_geometry(seaboxes), col = NA, border = "#bbbdc0", lwd = 0.15, add = TRUE)
+plot(st_geometry(countries), col = NA, border = "#ffffff", lwd = 1, add =TRUE)
+
+# Sources + elements d'habillage
+layoutLayer(title = "Densité de population - Méthode des quantiles",
+            author = "Serial Mappers, 2018", sources = "Eurostat, 2018",
+            scale = 200, tabtitle = FALSE,
+            frame = FALSE,theme = "red.pal",
+            south = TRUE)
+```
+
+
+Si on avait choisi une autre méthode de discrétisation le résultat aurait été tout 
+autre ! 
+
+```{r, eval=T, echo=F}
+# Mise en page
+par(mar = c(0.5,0.5,1.5,0.5)) # Ajuster les marges
+par(mfrow=c(2,2)) # 2 cartes par ligne et par colonne
+
+#----------------------
+# Carte 1 - quantiles
+#----------------------
+
+# Affichage de la couche pays sur l'emprise de l'Europe
+plot(st_geometry(regions), col = NA, border = NA)
+plot(st_geometry(countries), col = "#c6c4c4", border = NA, add =TRUE)
+
+# Cartographie (ratio)
+choroLayer(x = regions, 
+           var = "DENS_2017",
+           method ="quantile",
+           nclass = 10,
+           col = cols,
+           border = NA,
+           legend.pos = "topleft",
+           legend.title.txt = "Densité de population \n 2017 (hab/km²)",
+           legend.values.rnd = 0,
+           add=T)
 
 # Sources + elements d'habillage
 layoutLayer(title = "Densité de population - Méthode des quantiles",
@@ -810,30 +828,22 @@ layoutLayer(title = "Densité de population - Méthode des quantiles",
 #-------------------------------
 # Carte 2 - intervalles égaux
 #-------------------------------
-    
-# Mise en page (back)
-plot(st_geometry(background), col = "#e0ecff", border = NA, add =FALSE)
+
+# Affichage de la couche pays sur l'emprise de l'Europe
+plot(st_geometry(regions), col = NA, border = NA)
 plot(st_geometry(countries), col = "#c6c4c4", border = NA, add =TRUE)
-plot(st_geometry(seaboxes), col = "#f7fcfe", border = NA, add = TRUE)
 
 # Cartographie (ratio)
 choroLayer(x = regions, 
            var = "DENS_2017",
            method ="equal",
            nclass = 10,
+           add=T,
            col = cols,
            border = NA,
-           add = TRUE,
-           legend.pos = "topright",
+           legend.pos = "topleft",
            legend.title.txt = "Densité de population \n 2017 (hab/km²)",
            legend.values.rnd = 0)
-
-# Mise en page (top)
-plot (st_geometry(remote), col = "#e6e6e6", border =NA, add=TRUE)
-plot (st_geometry(borders), col = "#f7fcfe",lwd = 0.5, add = TRUE) 
-plot (st_geometry(cyprus), col = "#f7fcfe", border = NA, add = TRUE)
-plot (st_geometry(coastlines), col = "#d2dbef", lwd = 0.15, add = TRUE)
-plot(st_geometry(seaboxes), col = NA, border = "#bbbdc0", lwd = 0.15, add = TRUE)
 
 # Sources + elements d'habillage
 layoutLayer(title = "Densité de population - Méthode des intervalles égaux",
@@ -845,14 +855,13 @@ layoutLayer(title = "Densité de population - Méthode des intervalles égaux",
 #--------------------------------
 # Carte 3 - Moyenne écart-type
 #--------------------------------
-  
-# Mise en page (back)
-plot(st_geometry(background), col = "#e0ecff", border = NA, add =FALSE)
-plot(st_geometry(countries), col = "#c6c4c4", border = NA, add =TRUE)
-plot(st_geometry(seaboxes), col = "#f7fcfe", border = NA, add = TRUE)
 
 # Récupérer les seuils
 breaks <- getBreaks(v = regions$DENS_2017, k = 1.8, method = "msd", middle = FALSE)
+
+# Affichage de la couche pays sur l'emprise de l'Europe
+plot(st_geometry(regions), col = NA, border = NA)
+plot(st_geometry(countries), col = "#c6c4c4", border = NA, add =TRUE)
 
 # Cartographie (ratio)
 choroLayer(x = regions, 
@@ -860,18 +869,11 @@ choroLayer(x = regions,
            breaks = breaks,
            nclass = 10,
            col = cols,
+           add = T,
            border = NA,
-           add = TRUE,
-           legend.pos = "topright",
+           legend.pos = "topleft",
            legend.title.txt = "Densité de population \n 2017 (hab/km²)",
            legend.values.rnd = 0)
-
-# Mise en page (top)
-plot (st_geometry(remote), col = "#e6e6e6", border =NA, add=TRUE)
-plot (st_geometry(borders), col = "#f7fcfe",lwd = 0.5, add = TRUE) 
-plot (st_geometry(cyprus), col = "#f7fcfe", border = NA, add = TRUE)
-plot (st_geometry(coastlines), col = "#d2dbef", lwd = 0.15, add = TRUE)
-plot(st_geometry(seaboxes), col = NA, border = "#bbbdc0", lwd = 0.15, add = TRUE)
 
 # Sources + elements d'habillage
 layoutLayer(title = "Densité de population - Méthode Moyenne / écart-type",
@@ -884,11 +886,10 @@ layoutLayer(title = "Densité de population - Méthode Moyenne / écart-type",
 #--------------------------------------
 # Carte 4 - Progression géométrique
 #--------------------------------------  
-  
-# Mise en page (back)
-plot(st_geometry(background), col = "#e0ecff", border = NA, add =FALSE)
+
+# Affichage de la couche pays sur l'emprise de l'Europe
+plot(st_geometry(regions), col = NA, border = NA)
 plot(st_geometry(countries), col = "#c6c4c4", border = NA, add =TRUE)
-plot(st_geometry(seaboxes), col = "#f7fcfe", border = NA, add = TRUE)
 
 # Cartographie (ratio)
 choroLayer(x = regions, 
@@ -897,17 +898,10 @@ choroLayer(x = regions,
            nclass = 10,
            col = cols,
            border = NA,
-           add = TRUE,
-           legend.pos = "topright",
+           add = T,
+           legend.pos = "topleft",
            legend.title.txt = "Densité de population \n 2017 (hab/km²)",
            legend.values.rnd = 0)
-
-# Mise en page (top)
-plot (st_geometry(remote), col = "#e6e6e6", border =NA, add=TRUE)
-plot (st_geometry(borders), col = "#f7fcfe",lwd = 0.5, add = TRUE) 
-plot (st_geometry(cyprus), col = "#f7fcfe", border = NA, add = TRUE)
-plot (st_geometry(coastlines), col = "#d2dbef", lwd = 0.15, add = TRUE)
-plot(st_geometry(seaboxes), col = NA, border = "#bbbdc0", lwd = 0.15, add = TRUE)
 
 # Sources + elements d'habillage
 layoutLayer(title = "Densité de population - Méthode progression géométrique",
@@ -915,17 +909,44 @@ layoutLayer(title = "Densité de population - Méthode progression géométrique
             scale = 200, tabtitle = FALSE,
             frame = FALSE,theme = "red.pal",
             south = TRUE)
+
 ```
 
+## A vous de jouer !
 
+Créez une carte choroplèthe avec les paramètres suivants :
+* Indicateur : PIB / habitant 2014
+* Discrétisation : quantiles (8 classes)
+* Palette de couleurs : Double palette (green.pal/red.pal)
+
+Avant de passer à la cartographie, pensez à créer la variable
+PIB par habitant. 
+
+```{r, eval=F}
+par(mfrow=c(1,1)) # On revient à un affichage pleine page
+choroLayer(...)
+```
 
 ## Visualisation : cartes carroyées
 
+Sur les cartes précédentes on a pu constater que la taille des entités 
+territoriales est très différente d'un pays à l'autre. Pour certains pays
+(Allemagne, Pologne) les unités territoriales sont très petites et permettent de distinguer villes 
+et périphéries. Dans d'autres cas comme en France celles-sont agrégées et 
+rendent les résutats difficilement comparables. 
+
+Ces difficultés liées aux hétérogénéités de maillage renvoient une série 
+de travaux connus sous l'acronyme **MAUP** (Modifiable Area Unit Problem)[(voir)](http://www.csiss.org/GISPopSci/workshops/2009/UCSB/readings/Openshaw-Taylor-1979.pdf){target="_blank"}, 
+souvent illustré par ce type d'illustration. 
+
+<img src = "pics/maup2.png"></img>
+
+Plusieurs méthodes existent pour apporter des solutions à ces problèmes
+en cartographie.
+
 La méthode du carroyage consiste à découper l'espace géographique en un maillage
-formé de carrés réguliers dans une projection donnée. Elle permet de s'affranchir
-de l'arbitraire et de l'irrégularité d'un découpage administratif, comme c'est
-ici le cas avec l'Europe au niveau NUTS3. La donnée est répartie sur ce quadrillage
-régulier au prorate de la surface représentée. 
+formé de carrés réguliers dans une projection donnée. La donnée est répartie sur
+ce quadrillage régulier au prorata de la surface représentée. 
 
 <img src = "pics/carroyages.png"></img>
 
@@ -946,7 +967,6 @@ La procédure est la suivante :
 mygrid50k <- getGridLayer(x = regions, cellsize = 50000 * 50000, 
                        type = "regular", var = c("POP_2017","POP_2014","GDP_2014"))
 
-
 # Transformation des donnees dans une grille reguliere de 100 km
 mygrid100k <- getGridLayer(x = regions, cellsize = 100000 * 100000, 
                           type = "regular", var = c("POP_2017","POP_2014","GDP_2014"))
@@ -956,15 +976,19 @@ mygrid50k$densitykm <- mygrid50k$POP_2017 * 1000 * 1000 / mygrid50k$gridarea
 mygrid100k$densitykm <- mygrid100k$POP_2017 * 1000 * 1000 / mygrid100k$gridarea 
 
 
-# Cartographie
-par(mfrow=c(1,2)) # 2 cartes
-par(mar = c(0.5,0.5,1.5,0.5)) # Ahuster les marges
+# Carte 1
+par(mfrow=c(1,1))
+par(mar = c(0.5,0.5,1.5,0.5)) # Ajuster les marges
 
 cols <- carto.pal(pal1 = "blue.pal", pal2 = "red.pal",  n1 = 5, n2 = 5)  
-  
+
+plot(st_geometry(regions), col = NA, border = NA)
+plot(st_geometry(countries), col = "#c6c4c4", border = NA, add =TRUE)
+
 choroLayer(x = mygrid50k, var = "densitykm", 
            border = "grey80",col = cols, method ="quantile",
-           nclass = 10, legend.pos = "topright", legend.values.rnd = 1,
+           nclass = 10, legend.pos = "topleft", legend.values.rnd = 1,
+           lwd=0.5, add = T,
            legend.title.txt = "Densité de population, 2017")
 
 layoutLayer(title = "Densité de population dans une grille régulière de 50km",
@@ -974,10 +998,15 @@ layoutLayer(title = "Densité de population dans une grille régulière de 50km"
             col = "red",
             coltitle = "white",
             south = TRUE)
+# Carte 2
+
+plot(st_geometry(regions), col = NA, border = NA)
+plot(st_geometry(countries), col = "#c6c4c4", border = NA, add =TRUE)
 
 choroLayer(x = mygrid100k, var = "densitykm", 
            border = "grey80",col = cols, method ="quantile",
-           nclass = 10, legend.pos = "topright", legend.values.rnd = 1,
+           nclass = 10, legend.pos = "topleft", legend.values.rnd = 1,
+           lwd=0.5, add = T,
            legend.title.txt = "Densité de population, 2017")
 
 layoutLayer(title = "Densité de population dans une grille régulière de 100km",
@@ -989,44 +1018,47 @@ layoutLayer(title = "Densité de population dans une grille régulière de 100km
             south = TRUE)
 ```
 
+## Aller plus loin...
 
-## A vous de jouer !
+Remarque : D'autres méthodes existent pour résoudre les problèmes du MAUP, comme
+les cartes lissées (ou de potentiel) qui consiste à
+s'affranchir complètement du maillage administratif sous-jacent. 
 
-Créez en vis à vis une carte choroplèthe et une carte carroyée avec les paramètres suivants :
-
-Pour les deux cartes:
-* Indicateur : PIB / habitant 2014
-* Discrétisation : quantiles (8 classes)
-* Palette de couleurs : Double palette (green.pal/red.pal)
-
-Pour la carte carroyée
-* Résolution de la carte carroyée : 100 km
-* Type de grille : hexagones
-
-Exécutez ce code qui permet au prélable de préparer la grille et retirer les valeurs
-manquantes qui nuiraient au calcul.
 
 ```{r, eval=T}
-# Retirer les valeurs manquantes
-regions <- regions[!is.na(regions$GDP_2014),]
-regions <- regions[!is.na(regions$POP_2014),]
+par(mar = c(0.5,0.5,1.5,0.5)) # Ajuster les marges
+regions$GDPM_2014 <- regions$GDP_2014 * 1000000
+ratio <- regions$GDPM_2014 / regions$POP_2014
+summary(ratio)
 
-# Creation de la grille
-mygrid100k <- getGridLayer(x = regions, cellsize = 100000 * 100000, 
-                          type =  "hexagonal", var = c("POP_2014","GDP_2014"))
 
-# Calcul PIB par habitant
-mygrid100k$GDP_HAB <- mygrid100k$GDP_2014 * 1000000 / mygrid100k$POP_2014
-regions$GDP_HAB <- regions$GDP_2014 * 1000000 / regions$POP_2014
+bks <- c(500, 5000, 10000, 15000, 20000, 26921, 30000, 35000, 40000, 428302)
+cols <- c(rev(carto.pal("green.pal", 5)), carto.pal("orange.pal", 4))
+
+plot(st_geometry(regions), border = NA, col = NA)
+plot(st_geometry(countries), col = "#E3DEBF", border = NA, add = TRUE)
+
+r <- regions[substr(regions$id,1,2) != "TR",]
+r <- r[substr(r$id,1,2) != "IS",]
+
+smoothLayer(x = regions,
+            var = 'GDPM_2014', var2 = 'POP_2014',
+            span = 75000, beta = 2,
+            resolution = 50000,
+            legend.title.txt = "Potentiel de PIB par habitant, 2014\n(span = 75km)",
+            col = cols, breaks = bks,
+            lwd=0.2,
+            mask = st_buffer(r,1),
+            legend.pos = "topleft", legend.values.rnd = -2,
+            add = T)
+
+layoutLayer(title = "PIB par habitant, 2014", author = "Les serial mappers, 2018", 
+            sources = "Source: Eurostat, 2018", frame = TRUE, scale = 500, north = FALSE, 
+            theme = "sand.pal")
 ```
-
 
 
 # Exo 4 - Cartographier le Monde
-
-```{r eval = TRUE, echo =FALSE}
-setwd("exercice4")
-```
 
 ## Objectifs
 * Thématique : Les inégalités d'IDH et/ou d'espérance de vie
@@ -1058,10 +1090,10 @@ Méthode 2 : directement via R
 
 ```{r, eval=F, echo=T}
 url <- "https://www.naturalearthdata.com/http//www.naturalearthdata.com/download/110m/cultural/ne_110m_admin_0_countries.zip"
-download.file(url = url, destfile = "data/download/countries.zip")
-unzip("data/download/countries.zip", exdir = "data/download", unzip = "internal")
-file.remove("data/download/countries.zip")
-countries <- st_read(dsn = "data/download/ne_110m_admin_0_countries.shp", stringsAsFactors = F)
+download.file(url = url, destfile = "data/countries.zip")
+unzip("data/countries.zip", exdir = "data", unzip = "internal")
+file.remove("data/countries.zip")
+countries <- st_read(dsn = "data/ne_110m_admin_0_countries.shp", stringsAsFactors = F)
 ```
 
 Méthode 3 : directement via R
@@ -1076,6 +1108,7 @@ countries <- ne_countries(scale = 50, type = "countries", continent = NULL,
 Le fond de carte peut être visualisé avec l'instruction plot
 
 ```{r, eval=T, echo=T}
+par(mar = c(0.5,0.5,1.5,0.5))
 plot(st_geometry(countries))
 ```
 
@@ -1099,6 +1132,7 @@ countries <- countries[!is.na(countries$id),]
 ```
 
 ```{r, eval=T, echo=T}
+par(mar = c(0.5,0.5,1.5,0.5))
 plot(st_geometry(countries))
 ```
 
@@ -1187,6 +1221,7 @@ cols <- carto.pal(pal1="blue.pal", n1 = 3, pal2 = "orange.pal", n2 = 3, middle =
 Réalisation de la carte
 
 ```{r, eval=T, echo=T}
+par(mar = c(0.5,0.5,1.5,0.5))
 layoutLayer(extent = countries,
             bg="#EEEEEE",
             title = "Indice de développement humain en 2016",
@@ -1233,6 +1268,7 @@ b <- rbind(borders,outer)
 
 ```{r, eval=T, echo=T}
 # 1 - la carte choroplèthe
+par(mar = c(0.5,0.5,1.5,0.5))
 layoutLayer(extent = countries,
             bg="#EEEEEE",
             title = "Indice de développement humain en 2016",
@@ -1240,6 +1276,7 @@ layoutLayer(extent = countries,
             sources = "Human development Report, 2018",
             author = "les serial mappers"
             )
+
 choroLayer(x = countries, 
            var = "hdi2016",
            breaks = breaks,
@@ -1262,11 +1299,18 @@ discLayer(x = b, df = countries,
 ```
 
 
-# BONUS
+## A vous de jouer
 
-```{r eval = TRUE, echo =FALSE}
-setwd("bonus")
+Réaliser une carte de discontinuités sur l'espérance de vie
+
+```{r, eval=F, echo=T}
+layoutLayer(...)
+choroLayer(...)
+discLayer(...
 ```
+
+
+# BONUS
 
 ## Objectifs
 
@@ -1292,11 +1336,13 @@ library("cartography")
 depts <- st_read(dsn = "data/IGN/DEPARTEMENT.shp", stringsAsFactors = F)
 colnames(depts)
 Paris <- depts[depts$CODE_DEPT == 75,]
+par(mar = c(0.5,0.5,1.5,0.5))
 plot(st_geometry(Paris))
 
 Paname <- getTiles(x = Paris, type = "osm", crop = TRUE)
 Paname <- getTiles(x = Paris, type ="opencycle", crop = TRUE)
 tilesLayer(Paname)
+
 plot(st_geometry(Paris), lwd=4, add=T)
 
 
@@ -1315,6 +1361,7 @@ cameras <- cameras[cameras$ok == T,]
 
 Paname <- getTiles(x = Paris, type ="cartodark", crop = TRUE)
 tilesLayer(Paname)
+par(mar = c(0.5,0.5,1.5,0.5))
 plot(st_geometry(Paris), lwd=1, border="white", lty=2, add=T)
 plot(st_geometry(cameras), pch=20, col="red", add=T)
 ```
@@ -1333,21 +1380,24 @@ Import et affichage d'un fond de carte
 
 ```{r, eval=T, echo=T}
 countries <- st_read(dsn = "data/naturalearth/ne_110m_admin_0_countries.shp", stringsAsFactors = F)
-plot(st_geometry(countries), col="green")
+par(mar = c(0.5,0.5,1.5,0.5))
+plot(st_geometry(countries), col="#d1a2d3")
 ```
 
 Généralisation avec sf (ca marche mal)
 
 ```{r, eval=T, echo=T}
 countries2 <- st_simplify(x = countries, preserveTopology = TRUE, dTolerance = 2)
-plot(st_geometry(countries2), col="green")
+par(mar = c(0.5,0.5,1.5,0.5))
+plot(st_geometry(countries2), col="#d1a2d3")
 ```
 
 Généralisation avec rmapshaper (Youpie !!!)
 
 ```{r, eval=T, echo=T}
 countries2 <- ms_simplify(countries, keep = 0.1)
-plot(st_geometry(countries2), col="green")
+par(mar = c(0.5,0.5,1.5,0.5))
+plot(st_geometry(countries2), col="#d1a2d3")
 ```
 
 # BIBLIO
