@@ -13,30 +13,27 @@ output:
 
 <link rel="stylesheet" type="text/css" media="all" href="pics/mateshs.css" />
 
-<img src ="pics/construction.jpg"></img>
-
 <h3>
 Cette <b>formation de 3 heures 30</b> porte sur la visualisation de données géographiques sous R. Y sont abordées 
 les traitements SIG de base, la cartographie thématique (cartes en figurés proportionnels, cartes
 choroplèthes, cartes de typologie, etc) et des cartes reposant sur des techniques plus avancées comme les cartes 
-sur grille ou les cartes de discontinuité.
+sur grille ou les cartes de discontinuités.
 
 <img src="pics/cartocomp-700x576.png"></img>
 
 Sont ici principalement utilisés les packages <b>sf</b> (manipulation de données spatiales) et <b>cartography</b> (cartographie
-thématique). Chaque exemple propose une chaine de traitement depuis le chargement des données, leur mise en forme,
+thématique). Chaque exemple propose une chaîne de traitements depuis le chargement des données, leur mise en forme,
 jusqu'à la mobilisation de méthodes adaptées permettant de répondre à des questions spatiales. 
 
-Les exemples proposés sont basés sur différentes échelles, du local (région Occitanie) en passant par l'Europe et
-le Monde. 
+Les exemples proposés sont réalisés à différentes échelles, du local (région Occitanie) au Monde, en passant par l'Europe. 
 
 </h3>
 
 # Pourquoi faire de la cartographie avec R ?
 
-*"La science est infaillible, mais les savants se trompent toujours."* (Anatole France, 1889). Ce principe peut également être appliqué à la cartographie. En effet, toute carte est issue d'un processus complexe de choix, de selections, d'opérations statistiques ou géomatiques. Certains auteurs énoncent que les cartes sont subjectives. D'autres auteurs disent carrément que les cartes mentent. Quoi qu'il en soit, toute carte résulte de l'acte créateur des des choix de son auteur. Donc quand on se situe dans une démarche scientifique, ces choix doivent être traçables, partageables et soumis à la discussion scientifique (ce qui est difficilement faisable quand ces cartes sont réalisées dans un environnement "clic-bouton"). 
+*"La science est infaillible, mais les savants se trompent toujours."* (Anatole France, 1889). Ce principe peut également être appliqué à la cartographie. En effet, toute carte est issue d'un processus complexe de choix, de selections, d'opérations statistiques ou géomatiques. Certains auteurs énoncent que les cartes sont subjectives (Brunet). D'autres auteurs disent carrément que les cartes mentent (Monmonnier). Quoi qu'il en soit, toute carte résulte de l'acte créateur des choix de son auteur. Lorsque l'on se situe dans une démarche scientifique, ces choix doivent être traçables, partageables et soumis à la discussion scientifique (ce qui est difficilement faisable quand ces cartes sont réalisées dans un environnement "clic-bouton"). 
 
-La réalisation des cartes dans le langage R permet donc de tracer toutes les opérations de la réalisation cartographique. Réaliser des cartes dans ce langage unique permet, en diffusant le code source en même temps que les cartes, de jouer "carte sur table". Cela permet de détailler les choix qui ont été faits, et de s'exposer à la controverse scientifique.  Cela permet aussi de travailler à plusieur sur une carte en associant des compétances complémentaires (sémiologie graphique, statistiques, géomatique, etc.) et de faciliter la mise à jour de documents déjà rélisés (en rééxecutant un code préalablement réalisé).
+La réalisation des cartes dans le langage R permet de tracer toutes les opérations nécessaires à une réalisation cartographique de qualité. Réaliser des cartes dans ce langage unique permet, en diffusant le code source en même temps que les cartes, de jouer "cartes sur table". Cela permet de détailler les choix qui ont été faits et s'exposer à la controverse scientifique.  Cela permet aussi de travailler à plusieurs sur une carte, en associant des compétences complémentaires (sémiologie graphique, statistique, géomatique, etc.) et de faciliter la mise à jour de documents déjà rélisés (en rééxecutant un code préalablement réalisé, par exemple).
 
 Au final, l’utilisation de R nécessite un effort non négligeable pour ceux qui ne sont pas habitués à l’univers de la programmation informatique. Mais définitivement, l’investissement n'a que des avantages.
 
@@ -44,7 +41,7 @@ Au final, l’utilisation de R nécessite un effort non négligeable pour ceux q
 
 ## Environnement de travail
 
-Pour exécuter les programmes proposés par la formation, [installez / mettez à jour R](https://www.r-project.org/){target="_blank"} (version 3.4.4 minimum), [R Studio](https://www.rstudio.com/){target="_blank"}. Lancez ensuite R studio et installez les packages au moyen des commandes suivantes (prévoir bien 10 minutes) 
+Pour exécuter les programmes proposés par la formation, [installez / mettez à jour R](https://www.r-project.org/){target="_blank"} (version 3.4.4 minimum), [R Studio](https://www.rstudio.com/){target="_blank"}. Lancez ensuite R studio et installez les packages au moyen des commandes suivantes (prévoir au moins 10 minutes). 
 
 <img src ="pics/rstudio.png"></img>
 
@@ -88,8 +85,8 @@ str
 
 ### Packages dédiés à visualisation de données géographiques
 
-* Le package **cartography** permet de créer et intégrer des cartes thématiques dans sa chaine de traitement en R. Il permet des représentations cartographiques tels que les cartes en symboles proportionnels, des cartes choroplèthes, des typologies, des cartes de flux ou des cartes de discontinuité. Il offre également des fonctions qui permettent d'améliorer la réalisation de la carte, comme des palettes de couleur, des éléments d'habillage (échelle, flèche du nord, titre, légende...), d'y rattacher des labels ou d'accéder à des APIs cartographiques. 
-* Le package **cartogram** comme son nom l'indiqie permet de construire des cartogrames continus ou non continus.
+* Le package **cartography** permet de créer et intégrer des cartes thématiques dans sa chaîne de traitements en R. Il permet des représentations cartographiques tels que les cartes en symboles proportionnels, des cartes choroplèthes, des typologies, des cartes de flux ou des cartes de discontinuités. Il offre également des fonctions qui permettent d'améliorer la réalisation de la carte, comme des palettes de couleur, des éléments d'habillage (échelle, flèche du nord, titre, légende...), d'y rattacher des labels ou d'accéder à des APIs cartographiques. 
+* Le package **cartogram** comme son nom l'indique permet de construire des cartogrames continus ou discontinus.
 
 ### Packages dédiés à la manipulation de données (spatiales ou non)
 
@@ -117,7 +114,7 @@ str
 
 Téléchargez les données ici : [Télécharger](https://github.com/riatelab/anfdataviz/blob/master/exercice1.zip){target="_blank"}
 
-Décompressez le dossier et cliquez sur proj.Rproj. Le fichier exo1.R s'ouvre dans R-Studio.
+Décompressez le dossier et cliquez sur **proj.Rproj**. Le fichier **exo1.R** s'ouvre dans R-Studio.
 
 ## Commandes de base
 
@@ -127,7 +124,8 @@ Vérifiez votre répertoire de travail courant.
 getwd()
 ```
 
-Consulter le contenu. Et regarder ce qu'il y a dans le répertoire "data" 
+Consulter le contenu. 
+Regarder ce qu'il y a dans le répertoire "data" 
 
 ```{r, eval=F}
 list.files()
@@ -154,11 +152,13 @@ L'instruction plot permet d'afficher la couche.
 L'instruction st_geometry permet d'accéder à la variable définissant les géométries. 
 
 ```{r, eval=T}
+par(mar = c(0.5,0.5,1.5,0.5)) 
 plot(st_geometry(communes))
 ```
 
 Afficher la couche avec des parametres graphiques
 ```{r, eval=T}
+par(mar = c(0.5,0.5,1.5,0.5)) 
 plot(st_geometry(communes), col="#aec8f2", border="darkblue", lwd=1)
 ```
 
@@ -172,10 +172,10 @@ plot(st_geometry(communes), col="#aec8f2", border="darkblue", lwd=1)
 ## Introduction au SIG avec R / Manipuler les informations spatiales
 
 Nous cherchons à identifier les communes qui ont une partie de leur territoire 
-situé à moins de 20 km du centre de Sete.
+situé à moins de 20 km du centre de Sète.
 
 
-Nous commençons par extraire la commune de Sète.  
+Nous commençons par extraire la commune de Sète du fond de carte communal de référence.   
 
 ```{r, eval=T}
 macommune <- "SETE"
@@ -185,7 +185,7 @@ plot(st_geometry(communes), col="#aec8f2", border="darkblue", lwd=1)
 plot(st_geometry(monpoly), col="red", border="purple", lwd=1, add=T)
 ```
 
-Extraitre le centroide de la commune de Sete. 
+Calculer le centroïde de la commune de Sète. 
 
 ```{r, eval=T}
 moncentre <- st_centroid(x = monpoly)
@@ -215,7 +215,7 @@ communes$buff <- st_intersects(st_geometry(communes), st_geometry(buff), sparse 
 head(communes)
 ```
 
-Récupérer le nombre de communes à moins de 20 km
+Récupérer le nombre de communes situées à moins de 20 km de Sète. 
 
 ```{r, eval=T}
 nb <- dim(communes[communes$buff == T,])
@@ -270,7 +270,7 @@ communes$NOM_COMM
 # Exo 2 - Cartographier l'Occitanie
 
 ## Objectifs
-* Thématique : Réaliser une carte des catégories Socio professionnelles.
+* Thématique : Réaliser une carte des catégories socio-professionnelles.
 * Espace d'étude : Occitanie, communes
 * Visualisation associée : carte en figurés proportionnels (+ cartogrammes de Dorling)
 * packages utilisés : sf, cartography, cartogram, readxl 
@@ -279,7 +279,7 @@ communes$NOM_COMM
 
 Téléchargez les données ici : [Télécharger](https://github.com/riatelab/anfdataviz/blob/master/exercice2.zip){target="_blank"}
 
-Décompressez le dossier et cliquez sur proj.Rproj. Le fichier exo2.R s'ouvre dans R-Studio.
+Décompressez le dossier et cliquez sur **proj.Rproj**. Le fichier **exo2.R** s'ouvre dans R-Studio.
 
 ## Préparation des données
 Pour bien commencer, il est fondamental de jeter un oeil au fichier d'entrée
@@ -297,7 +297,7 @@ library("readxl")
 ```
 
 Importez correctement cette feuille du tableau Excel dans R. 
-Les commandes de base si dessous permettent de visualiser le nom des colonnes,
+Les commandes de base ci-dessous permettent de visualiser le nom des colonnes,
 de filtrer le contenu de la table (par région) et de visualiser finalement
 le tableau de données dans R. 
 
@@ -332,6 +332,7 @@ Importez et visualisez le fond de carte (extrait IGN Geofla communes).
 
 ```{r}
 communes <- st_read(dsn = "data/IGN/occitanie.shp", stringsAsFactors = F)
+par(mar = c(0.5,0.5,1.5,0.5)) 
 plot(st_geometry(communes),col="white", border="black", lwd=0.1)
 ```
 
@@ -360,10 +361,9 @@ colnames(communes) <-  c("id", "name", "agr", "art", "sup", "int", "emp", "ouv",
 head(communes)
 ```
 
+## Le package cartography
 
-## Visualisation : carte en figuré proportionnel 
-
-### Le package cartography
+### Le package et sa documentation
 
 Chargez le package *cartography*. 
 
@@ -371,18 +371,18 @@ Chargez le package *cartography*.
 library("cartography")
 ```
 
-Ce package permet de créer et intégrer des cartes thématiques dans sa chaine de 
-traitement en R. Il permet des représentations cartographiques tels que les cartes
+Ce package permet de créer et intégrer des cartes thématiques dans sa chaîne de 
+traitement en R. Il permet des représentations cartographiques telles que les cartes
 en symboles proportionnels, des cartes choroplèthes, des typologies, des cartes de
-flux ou des cartes de discontinuité. Il offre également des fonctions qui permettent
+flux ou des cartes de discontinuités. Il offre également des fonctions qui permettent
 d'améliorer la réalisation de la carte, comme des palettes de couleur, des éléments
 d'habillage (échelle, flèche du nord, titre, légende...), d'y rattacher des labels
 ou d'accéder à des APIs cartographiques.
 
-Pour utiliser aisément ce package, plusieurs ressources d'intérêts
+Pour utiliser aisément ce package, plusieurs sources d'intérêts peuvent être consultées :
 
 * La documentation du package qui documente toutes les fonctions du package,
-accessible directement dans R Studio. Pour celà, vous pouvez taper simplement :
+accessible directement dans R Studio. Pour cela, vous pouvez taper simplement :
 
 ```{r}
 ?cartography
@@ -393,7 +393,7 @@ de cartography, qui résume les principales fonctions du package de façon synth
 * La vignette associée au package, qui présente des réalisations issues de ce
 package, elle aussi accessible directement dans R studio.
 * La vignette [Faire des cartes - Introduction au package sf](https://github.com/riatelab/intro_sf){target="_blank"}
-qui présente intelligemment les packages *sf* et *cartography* à partir d'un cas d'utilisation
+qui présente les packages *sf* et *cartography*, à partir d'un cas d'utilisation
 centré sur Mexico. 
 * Le blog [R Géomatique](https://rgeomatic.hypotheses.org/){target="_blank"}, maintenu par
 l'auteur de *cartography* qui met à disposition ressources et exemples d'intérêt 
@@ -417,9 +417,13 @@ de l'implantation (point, ligne, surface) et la nature statistique de l'informat
 
 <img src = "pics/bertin_retiniennes.png", alt = "Bertin, 1967, niveau des variables rétiniennes"></img>
 
+
+## Visualisation : carte en figurés proportionnels 
+
 Pour les caractères quantitatifs absolus la variable visuelle adaptée est la taille
 afin de préserver graphiquement les rapports de proportionnalité existant entre
-les différentes valeurs du tableau de données.
+les différentes valeurs du tableau de données. Il n'est pas nécessaire de discrétiser
+les valeurs (cf exemple sur l'Europe). 
 
 
 ### Visualisation ! 
@@ -432,7 +436,7 @@ par(mar = c(0.5,0.5,1.5,0.5))
 
 # Cartographie
 plot(st_geometry(communes), col="lightblue",border="white", lwd=0.2) # Fond de carte de la région Occitanie
-propSymbolsLayer(x = communes, var = "total",  # Carte en figuré proportionnel 
+propSymbolsLayer(x = communes, var = "total",  # Carte en figurés proportionnels 
                  symbols = "circle", col =  "red",
                  legend.pos = "right", border = "grey",
                  legend.title.txt = "Les actifs",
@@ -444,19 +448,19 @@ title("Région Occitanie")
 ```
 
 
-## Visualisation : carte combinant figuré proportionnel et typologie
+## Visualisation : carte combinant figurés proportionnels et typologie
 
 Il est possible d'associer à ces figurés proportionnels la représentation
 d'un caractère qualitatif de différenciation. 
 
-La variable visuelle adaptée pour ce type de données est la couleur différencielle. 
+La variable visuelle adaptée pour ce type de données est la couleur différentielle. 
 
 Exécutez le code ci-dessous, qui propose le calcul d'une typologie sur la 
 surreprésentation d'ouvriers ou de cadres. Cette typologie peut être représentée
 simplement avec la fonction *typoLayer*. 
 
-Pour le choix des couleurs, vous pouvez utiliser color picker pour obtenir les
-couleurs que vous désirez au format hexadécimal présenté ci-dessous. 
+Pour le choix des couleurs, vous pouvez utiliser *color picker* pour obtenir les
+couleurs que vous désirez, au format hexadécimal présenté ci-dessous. 
 
 ```{r}
 # Typologie (plus d'ouvriers que de cadres ?)
@@ -483,7 +487,7 @@ typoLayer(communes, var="typo",
 ```
 
 On peut aussi décider d'associer cette représentation à la carte précédente
-en figuré proportionnel grâce à la fonction *propSymbolsTypoLayer* :  
+en figurés proportionnels, grâce à la fonction *propSymbolsTypoLayer* :  
 
 ```{r}
 # Ajuster les marges
@@ -512,10 +516,13 @@ title("Cadres et ouvriers en région Occitanie")
 ## Une astuce cartographique : le "cartogramme" de Dorling
 
 A cette échelle géographique on remarque que les cercles se superposent les uns
-sur aux autres. Cela ne nuit pas à la lisibilité générale de la carte mais on peut
-aussi décider d'utiliser un package et une fonction qui permet d'éviter cela. 
+sur les autres. Cela ne nuit pas à la compréhension globale de l'organisation spatiale
+du phénomène, mais ne permet pas d'en avoir une lecture précise (à cette échelle de visualisation et pour 
+cet espace d'étude). On peut aussi décider d'utiliser un package et une fonction qui permet d'éviter cela. 
 
-Pour ce faire, lancez la librairie *cartogram* et la fonction *cartogram_dorling*. 
+Pour ce faire, lancez la librairie *cartogram* et la fonction *cartogram_dorling*. Le cartogramme de Dorling
+replace la localisation des cercles en conservant leurs positions relatives et permet d'éviter leurs chevauchements. 
+
 
 ```{r}
 library("cartogram")
@@ -544,7 +551,7 @@ title("Ouvriers et cadres en Occitanie, 2014")
 ## A vous de jouer ! 
 
 On souhaite réaliser une carte avec une autre catégorie socio-professionnelle : les agriculteurs (ou une autre CSP de votre choix). 
-Pourquoi ne pourquoi choisir des carrés plutôt que des cercles ? 
+Pourquoi ne pas choisir des carrés à la place des cercles ? 
 
 Voici le code à compléter pour réaliser la carte : 
 
@@ -560,7 +567,7 @@ propSymbolsLayer(...)
 ## Objectifs
 * Thématique : Réaliser des cartes de densité de population et de PIB par 
 habitant pour les régions européennes. 
-* Espace d'étude : Europes, NUTS3
+* Espace d'étude : Europe, NUTS3
 * Visualisation associée : cartes choroplèthes et cartes en grilles
 * packages utilisés : sf, cartography, eurostat, reshape2
 
@@ -568,13 +575,13 @@ habitant pour les régions européennes.
 
 Téléchargez les données ici : [Télécharger](https://github.com/riatelab/anfdataviz/blob/master/exercice3.zip){target="_blank"}
 
-Décompressez le dossier et cliquez sur proj.Rproj. Le fichier exo3.R s'ouvre dans R-Studio.
+Décompressez le dossier et cliquez sur **proj.Rproj**. Le fichier **exo3.R** s'ouvre dans R-Studio.
 
 ## Préparation des données
 
 Chargez les géométries qui seront utilisées pour visualiser vos résultats.
-Il s'agit des géométries de référence des territoires européens adaptés à 
-la cartographie thématique proposés par [l'UMS RIATE](http://riate.cnrs.fr/?page_id=153). 
+Il s'agit des géométries de référence des territoires européens adaptées à 
+la cartographie thématique et proposées par [l'UMS RIATE](https://github.com/riatelab/nuts). 
 
 ```{r, eval=T}
 # Charger la librairie sf
@@ -588,19 +595,11 @@ countries <- st_read("data/GREAT/world.shp",stringsAsFactors = F)
 ```
 
 
-Astuce ! Le package *eurostat* permet d'accéder aux données de statistiques
-européennes directement dans l'environnement de R sans avoir besoin 
-d'aller chercher sur le site Web et de les télécharger. Cela permet 
-d'avoir des données à jour et d'éviter toute erreur de manipulation de 
+**Astuce !** Le package *eurostat* permet d'accéder à la base de données de référence européenne directement dans l'environnement de R. Cela permet d'avoir des données à jour et d'éviter des potentielles erreurs de manipulation de 
 données. 
 
 Le code ci-dessous (**à ne pas exécuter**) est un exemple de procédure 
 d'extraction de données (population, surface, PIB). 
-
-
-Ce bloc de code est dédié est à la recolte des données mises à disposition par Eurostat.
-Le package *eurostat* permet de les extraire. Le package *reshape2* sert à mettre
-en forme les données. La procédure à suivre est la suivante :
 
 
 ```{r, eval=F}
@@ -645,6 +644,7 @@ qui est maintenant associé aux géométries européennes de réference.
 
 ```{r, eval=T}
 regions <- st_read("data/regions_data.shp", stringsAsFactors = F)
+par(mar = c(0.5,0.5,1.5,0.5)) 
 plot(st_geometry(regions))
 head(regions)
 ```
@@ -656,7 +656,7 @@ le nombre de valeurs manquantes...
 apply(regions,2,function(x) sum(is.na(x)))
 ```
 
-... Et calculez le ratio sur lequel va porter la visualisation en conséquence
+... Et calculez le ratio sur lequel va porter la visualisation. 
 
 ```{r, eval=T}
 regions$DENS_2017 <- regions$POP_2017 / regions$AREA
@@ -699,9 +699,9 @@ summary(regions$DENS_2017)
 ```
 
 On constate qu'il y a beaucoup de régions à faible densité et très peu
-de région à forte densité; la série est donc fortement dyssimétrique à gauche.
+de région à forte densité; la série est donc fortement dyssimétrique "à gauche".
 
-On choisit donc la méthode des quantiles. 
+On choisit alors la méthode des quantiles qui permet de préserver la dissymétrie des valeurs. 
 
 *NB / Dans cartography, plusieurs méthodes de discrétisation sont proposées. Jetez un
 oeil à la documentation de la fonction getBreaks pour en savoir plus.* 
@@ -712,7 +712,7 @@ oeil à la documentation de la fonction getBreaks pour en savoir plus.*
 Le nombre de classes dépend du nombre d'unités spatiales prises en compte 
 (plus il y a d'unités spatiales plus on peut faire de classes) et dépend
 des capacités de perception de l'oeil humain (distinguer 10 nuances de
-couleur est un maximum). 
+couleur est un grand maximum). 
 
 On souhaite mettre en évidence les 10 % des valeurs les plus élevées (régions
 métropolitaines) et les 10 % des valeurs les plus faibles. Autrement dit, 
@@ -757,6 +757,8 @@ On utilise la projection officielle pour l'Union Européenne
 countries <- st_transform(countries,3035)
 regions <- st_transform(regions,3035)
 ```
+
+La carte choroplèthe est réalisée avec la fonction **choroLayer**. 
 
 ```{r, eval=T}
 
@@ -932,34 +934,35 @@ choroLayer(...)
 Sur les cartes précédentes on a pu constater que la taille des entités 
 territoriales est très différente d'un pays à l'autre. Pour certains pays
 (Allemagne, Pologne) les unités territoriales sont très petites et permettent de distinguer villes 
-et périphéries. Dans d'autres cas comme en France celles-sont agrégées et 
+et périphéries. Dans d'autres cas, comme en France, celles-sont agrégées et 
 rendent les résutats difficilement comparables. 
 
-Ces difficultés liées aux hétérogénéités de maillage renvoient une série 
+Ces difficultés liées aux hétérogénéités de maillage renvoient à une série 
 de travaux connus sous l'acronyme **MAUP** (Modifiable Area Unit Problem)[(voir)](http://www.csiss.org/GISPopSci/workshops/2009/UCSB/readings/Openshaw-Taylor-1979.pdf){target="_blank"}, 
-souvent illustré par ce type d'illustration. 
+souvent illustré de la façon suivante : 
 
 <img src = "pics/maup2.png"></img>
 
 Plusieurs méthodes existent pour apporter des solutions à ces problèmes
 en cartographie.
 
-La méthode du carroyage consiste à découper l'espace géographique en un maillage
+La méthode du carroyage, par exemple, consiste à découper l'espace géographique en un maillage
 formé de carrés réguliers dans une projection donnée. La donnée est répartie sur
-ce quadrillage régulier au prorata de la surface représentée. 
+ce quadrillage régulier au prorata de la surface représentée. Le quadrillage permet ainsi
+de s'affranchir des mailles administratives. 
 
 <img src = "pics/carroyages.png"></img>
 
-Comment faire ? L'instruction getGridLayer du package cartography permet de construire ces grilles 
+Comment faire ? La fonction **getGridLayer** du package cartography permet de construire ces grilles 
 régulières. Expolorez la documentation pour vous sensibiliser aux arguments 
 de la fonction. 
 
 La procédure est la suivante :
 
-1. Définir le pas de grille (en mètres), son type et les variables qui sont transformées
+1. Définir le pas de grille (en mètres), son type et les variables qui seront transformées.
 2. Pour les calculs de densité, convertir la surface en km². 
-3. Pour les autres indicateurs, combiner les données de la façon suivante : ratio = stock1/stock2
-4. Choisir sa palette, son nombre de classes et sa méthode de discrétisation
+3. Pour les autres indicateurs, combiner les données de la façon suivante : ratio = stock1/stock2.
+4. Choisir sa palette, son nombre de classes et sa méthode de discrétisation.
 5. Représenter la grille avec la fonction choroLayer de cartography. 
 
 ```{r, eval=T}
@@ -1021,8 +1024,10 @@ layoutLayer(title = "Densité de population dans une grille régulière de 100km
 ## Aller plus loin...
 
 Remarque : D'autres méthodes existent pour résoudre les problèmes du MAUP, comme
-les cartes lissées (ou de potentiel) qui consiste à
-s'affranchir complètement du maillage administratif sous-jacent. 
+les cartes lissées (ou de potentiel) qui consistent à
+s'affranchir complètement du maillage administratif sous-jacent et qui se basent
+sur la prise en compte du voisinage géographique selon une fonction mathématique 
+(généralement gaussienne). 
 
 
 ```{r, eval=T}
@@ -1040,6 +1045,7 @@ plot(st_geometry(countries), col = "#E3DEBF", border = NA, add = TRUE)
 
 r <- regions[substr(regions$id,1,2) != "TR",]
 r <- r[substr(r$id,1,2) != "IS",]
+r <- r[substr(r$id,1,2) != "CH",]
 
 smoothLayer(x = regions,
             var = 'GDPM_2014', var2 = 'POP_2014',
@@ -1061,19 +1067,19 @@ layoutLayer(title = "PIB par habitant, 2014", author = "Les serial mappers, 2018
 # Exo 4 - Cartographier le Monde
 
 ## Objectifs
-* Thématique : Les inégalités d'IDH et/ou d'espérance de vie
+* Thématique : Les inégalités d'IDH et/ou d'espérance de vie.
 * Espace d'étude : Le Monde, pays.
-* Visualisation associée : carte chorplèthe, discontinuités
-* packages utilisés : sf, cartography, rnaturalearth, readxl, countrycode
+* Visualisation associée : carte chorplèthe, discontinuités.
+* packages utilisés : sf, cartography, rnaturalearth, readxl, countrycode.
 
 <img src="pics/discontinuités.png"></img>
 
 
 ## Téléchargement des données
 
-Téléchargez les doonnées ici : [Télécharger](https://github.com/riatelab/anfdataviz/blob/master/exercice4.zip){target="_blank"}
+Téléchargez les données ici : [Télécharger](https://github.com/riatelab/anfdataviz/blob/master/exercice4.zip){target="_blank"}
 
-Décompressez le dossier et cliquez sur proj.Rproj. Le fichier exo4.R s'ouvre dans R-Studio.
+Décompressez le dossier et cliquez sur **proj.Rproj**. Le fichier **exo4.R** s'ouvre dans R-Studio.
 
 ## Préparation des données
 
@@ -1086,7 +1092,7 @@ library("sf")
 countries <- st_read(dsn = "data/naturalearth/ne_110m_admin_0_countries.shp", stringsAsFactors = F)  
 ```
 
-Méthode 2 : directement via R
+Méthode 2 : en ligne
 
 ```{r, eval=F, echo=T}
 url <- "https://www.naturalearthdata.com/http//www.naturalearthdata.com/download/110m/cultural/ne_110m_admin_0_countries.zip"
@@ -1105,7 +1111,7 @@ countries <- ne_countries(scale = 50, type = "countries", continent = NULL,
                           returnclass = "sf")
 ```
 
-Le fond de carte peut être visualisé avec l'instruction plot
+Le fond de carte peut être visualisé avec l'instruction plot.
 
 ```{r, eval=T, echo=T}
 par(mar = c(0.5,0.5,1.5,0.5))
@@ -1119,13 +1125,13 @@ countries <- countries[,c("adm0_a3", "admin", "geometry")]
 colnames(countries) <- c("id","name","geometry")
 ```
 
-On Supprime l'Antarctique
+On Supprime l'Antarctique.
 
 ```{r, eval=T, echo=T}
 countries <- countries[countries$id != "ATA",]
 ```
 
-On supprime les lignes vides
+On supprime les lignes vides.
 
 ```{r, eval=T, echo=T}
 countries <- countries[!is.na(countries$id),]
@@ -1150,7 +1156,7 @@ colnames(lifexp) <- c("id","name","lifexp2016")
 lifexp$lifexp2016 <- as.numeric(as.character(lifexp$lifexp2016))
 ```
 
-Import des données sur l'Indice de deveoppement humain (source : Human Development Report)
+Import des données sur l'indice de developpement humain (source : Human Development Report)
 
 ```{r, eval=T, echo=T}
 file <-"data/hdr/Human Development Index (HDI).csv"
@@ -1193,7 +1199,7 @@ countries <- st_transform(countries, "+proj=cea +lon_0=0 +lat_ts=45 +x_0=0 +y_0=
 plot(st_geometry(countries))
 ```
 
-Jointures des deux fichiers de données
+Jointures des deux fichiers de données.
 
 ```{r, eval=T, echo=T}
 countries <- merge(countries, lifexp, by="id", all.x=TRUE)
@@ -1204,21 +1210,21 @@ colnames(countries)[2] <- "name"
 
 <b>On travaille sur l'indice de développement humain</b>
 
-analyse de la distribution
+Analyse de la distribution.
 
 ```{r, eval=T, echo=T}
 var <- countries$hdi2016
 hist(countries$hdi2016, probability = TRUE, nclass = 30)
 ```
 
-On choisit une discretisation par la méthode des <b>quantiles</b> sans classe centrale
+On choisit une discretisation par la méthode des <b>quantiles</b> sans classe centrale.
 
 ```{r, eval=T, echo=T}
 breaks <- getBreaks(v = var, nclass = 6, method = "quantile")
 cols <- carto.pal(pal1="blue.pal", n1 = 3, pal2 = "orange.pal", n2 = 3, middle = FALSE, transparency = FALSE)
 ```
 
-Réalisation de la carte
+Réalisation de la carte.
 
 ```{r, eval=T, echo=T}
 par(mar = c(0.5,0.5,1.5,0.5))
@@ -1258,13 +1264,13 @@ plot(st_geometry(borders), col="#CCCCCC", lwd=1)
 plot(st_geometry(outer), col="red", lwd=1, add=T)
 ```
 
-On assemble les deux couches avec rbind
+On assemble les deux couches avec rbind.
 
 ```{r, eval=T, echo=T}
 b <- rbind(borders,outer)
 ```
 
-<b>Tout est prêt pour réaliser une carte de discontinuités</b>
+<b>Tout est prêt pour réaliser une carte de discontinuités</b>.
 
 ```{r, eval=T, echo=T}
 # 1 - la carte choroplèthe
@@ -1319,13 +1325,13 @@ discLayer(...
 
 ## Téléchargement des données
 
-Téléchargez les doonnées ici : [Télécharger](https://github.com/riatelab/anfdataviz/blob/master/bonus.zip){target="_blank"}
+Téléchargez les données ici : [Télécharger](https://github.com/riatelab/anfdataviz/blob/master/bonus.zip){target="_blank"}
 
-Décompressez le dossier et cliquez sur proj.Rproj. Le fichier bonus.R s'ouvre dans R-Studio.
+Décompressez le dossier et cliquez sur **proj.Rproj**. Le fichier **bonus.R** s'ouvre dans R-Studio.
 
 ## Dé-Googliser la carto ! 
 
-[OpenStreetMap (OSM)](https://www.openstreetmap.org){target="_blank"} est un projet de cartographie participatif qui a pour but de constituer une base de données géographiques libre à l'échelle mondiale. OpenStreetMap vous permet de voir, modifier et utiliser des données géographiques dans le Monde entier. En résumé, c'est comme Google Maps, mais en mieux...
+[OpenStreetMap (OSM)](https://www.openstreetmap.org){target="_blank"} est un projet de cartographie participative qui a pour but de constituer une base de données géographiques libre à l'échelle mondiale. OpenStreetMap vous permet de voir, modifier et utiliser des données géographiques dans le Monde entier. En résumé, c'est comme Google Maps, mais en mieux...
 
 <img src="pics/osm.png"></img>
 
@@ -1376,7 +1382,7 @@ Toute carte est une reproduction réduite d'une portion de l'espace. Elle suppos
 library("rmapshaper")
 ```
 
-Import et affichage d'un fond de carte
+Import et affichage d'un fond de carte.
 
 ```{r, eval=T, echo=T}
 countries <- st_read(dsn = "data/naturalearth/ne_110m_admin_0_countries.shp", stringsAsFactors = F)
@@ -1384,7 +1390,7 @@ par(mar = c(0.5,0.5,1.5,0.5))
 plot(st_geometry(countries), col="#d1a2d3")
 ```
 
-Généralisation avec sf (ca marche mal)
+Généralisation avec sf (ça ne marche pas très bien... Pour l'instant ! ).
 
 ```{r, eval=T, echo=T}
 countries2 <- st_simplify(x = countries, preserveTopology = TRUE, dTolerance = 2)
@@ -1407,9 +1413,10 @@ plot(st_geometry(countries2), col="#d1a2d3")
 * BERTIN Jacques, La graphique et le traitement graphique de l’information, Flammarion, 1977, 280 p.
 * BRUNET Roger, La carte mode d’emploi, Fayard-Reclus, 1987, 270p.
 * ElementR (Groupe), R et espace, traitement de l’information géographique, 2014, Framabook.
+* GIRAUD Timothée : Carnet de recherche [rgeomatic](https://rgeomatic.hypotheses.org){target="_blank"}
 * LAMBERT Nicolas : Carnet de recherche [neocarto](https://neocarto.hypotheses.org){target="_blank"}
 * LAMBERT Nicolas, ZANIN Christine : « Manuel de cartographie. Principes, méthodes, applications », cursus, Armand Colin, 18 mai 2016, 224p. 
-* Giraud Timothée : Carnet de recherche [rgeomatic](https://rgeomatic.hypotheses.org){target="_blank"}
+* MONMONNIER Mark, Comment faire mentir les cartes ou du mauvais usage de la géographie, University of Chicago Press, 1991, 256 p. 
 * ZANIN Christine, TREMELO Marie-Laure, Savoir faire une carte, Aide à la conception et à la réalisation d’une carte thématique univariée, coll. Sup géographie, Belin, 2003, 200p.
 
 <img src = "pics/baniere_nervure_EB_2.jpg"></img>
