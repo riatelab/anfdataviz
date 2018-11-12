@@ -152,13 +152,11 @@ L'instruction plot permet d'afficher la couche.
 L'instruction st_geometry permet d'accéder à la variable définissant les géométries. 
 
 ```{r, eval=T}
-par(mar = c(0.5,0.5,1.5,0.5)) 
 plot(st_geometry(communes))
 ```
 
 Afficher la couche avec des parametres graphiques
 ```{r, eval=T}
-par(mar = c(0.5,0.5,1.5,0.5)) 
 plot(st_geometry(communes), col="#aec8f2", border="darkblue", lwd=1)
 ```
 
